@@ -1,0 +1,27 @@
+[{
+    "id": 1,
+    "name": "Berdor",
+    "weekSchedule": [{
+        "weekOfYear": 6,
+        "mondayShift": 1,
+        "tuesdayShift": 1,
+        "wednesdayShift": 1,
+        "thursdayShift": 1,
+        "fridayShift": 1,
+        "saturdayShift": 0,
+        "sundayShift": 0,
+    }, {
+        "weekOfYear": 7,
+        "mondayShift": 0,
+        "tuesdayShift": 0,
+        "wednesdayShift": 0,
+        "thursdayShift": 0,
+        "fridayShift": 0,
+        "saturdayShift": 1,
+        "sundayShift": 1,
+    }],
+    "customSchedule": [{
+        "date": "2016-02-14",
+        "shift": 0
+    }]
+}]
