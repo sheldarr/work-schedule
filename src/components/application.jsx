@@ -1,3 +1,4 @@
+import NavigationBar from './navigationBar.jsx';
 import React from 'react';
 
 const Application = React.createClass({
@@ -8,6 +9,7 @@ const Application = React.createClass({
     render () {
         return (
             <div>
+                <NavigationBar/>
                 {this.props.children}
             </div>
         );
