@@ -2,7 +2,7 @@
   "name": "work-schedule",
   "version": "1.0.0",
   "scripts": {
-    "start": "node ./src/server.js",
+    "start": "node ./server.js",
     "watch": "webpack --progress --color --watch"
   },
   "repository": {

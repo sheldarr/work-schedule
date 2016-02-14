@@ -56,6 +56,18 @@
 
 	var _reactRouter = __webpack_require__(159);
 
+	var _application = __webpack_require__(205);
+
+	var _application2 = _interopRequireDefault(_application);
+
+	var _calendar = __webpack_require__(206);
+
+	var _calendar2 = _interopRequireDefault(_calendar);
+
+	var _notFound = __webpack_require__(207);
+
+	var _notFound2 = _interopRequireDefault(_notFound);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	_reactDom2.default.render(_react2.default.createElement(
@@ -63,10 +75,9 @@
 	    null,
 	    _react2.default.createElement(
 	        _reactRouter.Route,
-	        { component: Application, path: '/' },
-	        _react2.default.createElement(_reactRouter.IndexRoute, { component: Playlist }),
-	        _react2.default.createElement(_reactRouter.Route, { component: Admin, path: 'admin' }),
-	        _react2.default.createElement(_reactRouter.Route, { component: NotFound, path: '*' })
+	        { component: _application2.default, path: '/' },
+	        _react2.default.createElement(_reactRouter.IndexRoute, { component: _calendar2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { component: _notFound2.default, path: '*' })
 	    )
 	), document.getElementById('root'));
 
@@ -23990,6 +24001,98 @@
 
 	exports['default'] = useBasename;
 	module.exports = exports['default'];
+
+/***/ },
+/* 205 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Application = _react2.default.createClass({
+	    displayName: 'Application',
+
+	    propTypes: {
+	        children: _react2.default.PropTypes.node
+	    },
+
+	    render: function render() {
+	        return _react2.default.createElement(
+	            'div',
+	            null,
+	            this.props.children
+	        );
+	    }
+	});
+
+	exports.default = Application;
+
+/***/ },
+/* 206 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Calendar = _react2.default.createClass({
+	    displayName: 'Calendar',
+	    render: function render() {
+	        return _react2.default.createElement(
+	            'div',
+	            null,
+	            'Calendar'
+	        );
+	    }
+	});
+
+	exports.default = Calendar;
+
+/***/ },
+/* 207 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var NotFound = _react2.default.createClass({
+	    displayName: 'NotFound',
+	    render: function render() {
+	        return _react2.default.createElement(
+	            'div',
+	            null,
+	            'Not found'
+	        );
+	    }
+	});
+
+	exports.default = NotFound;
 
 /***/ }
 /******/ ]);
