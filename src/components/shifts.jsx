@@ -1,3 +1,4 @@
+import DeleteModal from './deleteModal.jsx';
 import moment from 'moment';
 import React from 'react';
 
@@ -46,6 +47,7 @@ const Shifts = React.createClass({
                                     </tr>)}
                                 </tbody>
                             </Table>
+                            <DeleteModal display={true} objectName={'shift'}/>
                         </Panel>
                     </Col>
                 </Row>

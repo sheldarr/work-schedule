@@ -62426,6 +62426,10 @@
 	    value: true
 	});
 
+	var _deleteModal = __webpack_require__(668);
+
+	var _deleteModal2 = _interopRequireDefault(_deleteModal);
+
 	var _moment = __webpack_require__(548);
 
 	var _moment2 = _interopRequireDefault(_moment);
@@ -62533,7 +62537,8 @@
 	                                    );
 	                                })
 	                            )
-	                        )
+	                        ),
+	                        _react2.default.createElement(_deleteModal2.default, { display: true, objectName: 'shift' })
 	                    )
 	                )
 	            )
@@ -62610,6 +62615,79 @@
 			"endMinute": 59
 		}
 	];
+
+/***/ },
+/* 668 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactBootstrap = __webpack_require__(208);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var deleteModal = _react2.default.createClass({
+	    displayName: 'deleteModal',
+
+	    propTypes: {
+	        display: _react2.default.PropTypes.bool.isRequired,
+	        objectName: _react2.default.PropTypes.string.isRequired,
+	        onDismiss: _react2.default.PropTypes.func.isRequired,
+	        onSuccess: _react2.default.PropTypes.func.isRequired
+	    },
+
+	    renderModal: function renderModal() {
+	        return _react2.default.createElement(
+	            _reactBootstrap.Modal.Dialog,
+	            null,
+	            _react2.default.createElement(
+	                _reactBootstrap.Modal.Header,
+	                null,
+	                _react2.default.createElement(
+	                    _reactBootstrap.Modal.Title,
+	                    null,
+	                    'Delete'
+	                )
+	            ),
+	            _react2.default.createElement(
+	                _reactBootstrap.Modal.Body,
+	                null,
+	                'Do you really want to remove ' + this.props.objectName + '?'
+	            ),
+	            _react2.default.createElement(
+	                _reactBootstrap.Modal.Footer,
+	                null,
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'success' },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'ok' }),
+	                    ' ',
+	                    'Yes'
+	                ),
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'danger' },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' }),
+	                    ' ',
+	                    'No'
+	                )
+	            )
+	        );
+	    },
+	    render: function render() {
+	        return this.props.display ? this.renderModal() : null;
+	    }
+	});
+
+	exports.default = deleteModal;
 
 /***/ }
 /******/ ]);
