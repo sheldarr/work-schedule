@@ -1,5 +1,5 @@
+import DateTimeField from 'react-bootstrap-datetimepicker';
 import React from 'react';
-
 import { Button, Glyphicon, Input, Modal } from 'react-bootstrap';
 
 const CreateShiftModal = React.createClass({
@@ -17,9 +17,14 @@ const CreateShiftModal = React.createClass({
                 </Modal.Header>
                 <Modal.Body>
                      <Input label="Name" placeholder="Name" type="text"/>
-                     <Input label="Name" placeholder="Name" type="number"/>
-                     <Input label="Name" placeholder="Name" type="number"/>
-
+                     <div className="form-group">
+                         <label className="control-label"><span>{'Start'}</span></label>
+                         <DateTimeField mode={'time'}/>
+                     </div>
+                     <div className="form-group">
+                         <label className="control-label"><span>{'End'}</span></label>
+                         <DateTimeField mode={'time'}/>
+                     </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button bsStyle="success"><Glyphicon glyph="ok"/> {'Create'}</Button>

@@ -1,4 +1,5 @@
 import CreateWorkerModal from './createWorkerModal.jsx';
+import DeleteModal from './deleteModal.jsx';
 import React from 'react';
 import { Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
 
