@@ -61472,44 +61472,12 @@
 
 	var redux = __webpack_require__(649);
 	var rootReducer = __webpack_require__(659);
+	var workers = __webpack_require__(666);
+	var shifts = __webpack_require__(667);
 
 	var initialState = {
-	    workers: [{
-	        id: 1,
-	        name: 'Berdor',
-	        schedule: [{
-	            dayOfYear: 45,
-	            shiftId: 1
-	        }, {
-	            dayOfYear: 46,
-	            shiftId: 2
-	        }, {
-	            dayOfYear: 47,
-	            shiftId: 3
-	        }]
-	    }],
-	    shifts: [{
-	        id: 1,
-	        name: 'I',
-	        startHour: 0,
-	        startMinute: 0,
-	        endHour: 8,
-	        endMinute: 0
-	    }, {
-	        id: 2,
-	        name: 'II',
-	        startHour: 8,
-	        startMinute: 0,
-	        endHour: 16,
-	        endMinute: 0
-	    }, {
-	        id: 3,
-	        name: 'III',
-	        startHour: 16,
-	        startMinute: 0,
-	        endHour: 23,
-	        endMinute: 59
-	    }]
+	    workers: workers,
+	    shifts: shifts
 	};
 
 	module.exports = redux.createStore(rootReducer, initialState);
@@ -62574,6 +62542,74 @@
 	});
 
 	exports.default = Shifts;
+
+/***/ },
+/* 666 */
+/***/ function(module, exports) {
+
+	module.exports = [
+		{
+			"id": 1,
+			"name": "Berdor",
+			"schedule": [
+				{
+					"dayOfYear": 45,
+					"shiftId": 1
+				},
+				{
+					"dayOfYear": 46,
+					"shiftId": 2
+				},
+				{
+					"dayOfYear": 47,
+					"shiftId": 3
+				},
+				{
+					"dayOfYear": 48,
+					"shiftId": 1
+				},
+				{
+					"dayOfYear": 49,
+					"shiftId": 2
+				},
+				{
+					"dayOfYear": 50,
+					"shiftId": 3
+				}
+			]
+		}
+	];
+
+/***/ },
+/* 667 */
+/***/ function(module, exports) {
+
+	module.exports = [
+		{
+			"id": 1,
+			"name": "I",
+			"startHour": 0,
+			"startMinute": 0,
+			"endHour": 8,
+			"endMinute": 0
+		},
+		{
+			"id": 2,
+			"name": "II",
+			"startHour": 8,
+			"startMinute": 0,
+			"endHour": 16,
+			"endMinute": 0
+		},
+		{
+			"id": 3,
+			"name": "III",
+			"startHour": 16,
+			"startMinute": 0,
+			"endHour": 23,
+			"endMinute": 59
+		}
+	];
 
 /***/ }
 /******/ ]);

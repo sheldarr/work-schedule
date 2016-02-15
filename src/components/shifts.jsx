@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from 'moment';
 import React from 'react';
 
 import { Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';

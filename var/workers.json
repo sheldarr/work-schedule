@@ -3,21 +3,21 @@
     "name": "Berdor",
     "schedule": [{
         "dayOfYear": 45,
-        "shift": 1
+        "shiftId": 1
     }, {
         "dayOfYear": 46,
-        "shift": 2
+        "shiftId": 2
     }, {
         "dayOfYear": 47,
-        "shift": 3
+        "shiftId": 3
     }, {
         "dayOfYear": 48,
-        "shift": 1
+        "shiftId": 1
     }, {
         "dayOfYear": 49,
-        "shift": 2
+        "shiftId": 2
     }, {
         "dayOfYear": 50,
-        "shift": 3
+        "shiftId": 3
     }]
 }]

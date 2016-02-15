@@ -4,8 +4,7 @@ const expect = require('expect');
 
 describe('workers reducer', () => {
     it('should handle initial state', () => {
-        var workersBefore = undefined;
-        var workersAfter = workers(workersBefore, {});
+        var workersAfter = workers(undefined, {});
 
         expect(workersAfter).toEqual([]);
     });
