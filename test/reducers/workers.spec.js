@@ -9,4 +9,23 @@ describe('workers reducer', () => {
 
         expect(workersAfter).toEqual([]);
     });
+
+    it('should handle ADD_WORKER', () => {
+        var worker = {
+            id: 1,
+            name: 'Name',
+            schedule: [{
+                dayOfYear: 1,
+                shift: 1
+            }]
+        };
+
+        var workersBefore = [];
+        var workersAfter = workers(workersBefore, {
+            worker: worker,
+            type: ActionTypes.ADD_WORKER
+        });
+
+        expect(workersAfter).toInclude(worker);
+    });
 });
