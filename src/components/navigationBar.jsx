@@ -8,7 +8,9 @@ const NavigationBar = React.createClass({
             <Navbar>
                 <NavbarBrand>{'work-schedule'}</NavbarBrand>
                 <Nav className="pull-right">
-                    <NavItem href="#">{'Calendar'}</NavItem>
+                    <NavItem href="/#/workers">{'Workers'}</NavItem>
+                    <NavItem href="/#/shifts">{'Shifts'}</NavItem>
+                    <NavItem href="/#">{'Calendar'}</NavItem>
                 </Nav>
             </Navbar>
         );

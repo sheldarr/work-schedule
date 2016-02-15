@@ -68,6 +68,14 @@
 
 	var _notFound2 = _interopRequireDefault(_notFound);
 
+	var _workers = __webpack_require__(664);
+
+	var _workers2 = _interopRequireDefault(_workers);
+
+	var _shifts = __webpack_require__(665);
+
+	var _shifts2 = _interopRequireDefault(_shifts);
+
 	var _store = __webpack_require__(648);
 
 	var _store2 = _interopRequireDefault(_store);
@@ -82,6 +90,22 @@
 	    }
 	});
 
+	var WorkersWrapper = _react2.default.createClass({
+	    displayName: 'WorkersWrapper',
+
+	    render: function render() {
+	        return _react2.default.createElement(_workers2.default, { store: _store2.default });
+	    }
+	});
+
+	var ShiftsWrapper = _react2.default.createClass({
+	    displayName: 'ShiftsWrapper',
+
+	    render: function render() {
+	        return _react2.default.createElement(_shifts2.default, { store: _store2.default });
+	    }
+	});
+
 	_reactDom2.default.render(_react2.default.createElement(
 	    _reactRouter.Router,
 	    null,
@@ -89,6 +113,8 @@
 	        _reactRouter.Route,
 	        { component: _application2.default, path: '/' },
 	        _react2.default.createElement(_reactRouter.IndexRoute, { component: CalendarWrapper }),
+	        _react2.default.createElement(_reactRouter.Route, { component: WorkersWrapper, path: '/workers' }),
+	        _react2.default.createElement(_reactRouter.Route, { component: ShiftsWrapper, path: '/shifts' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: _notFound2.default, path: '*' })
 	    )
 	), document.getElementById('root'));
@@ -24100,7 +24126,17 @@
 	                { className: 'pull-right' },
 	                _react2.default.createElement(
 	                    _reactBootstrap.NavItem,
-	                    { href: '#' },
+	                    { href: '/#/workers' },
+	                    'Workers'
+	                ),
+	                _react2.default.createElement(
+	                    _reactBootstrap.NavItem,
+	                    { href: '/#/shifts' },
+	                    'Shifts'
+	                ),
+	                _react2.default.createElement(
+	                    _reactBootstrap.NavItem,
+	                    { href: '/#' },
 	                    'Calendar'
 	                )
 	            )
@@ -41111,10 +41147,16 @@
 	                null,
 	                _react2.default.createElement(
 	                    _reactBootstrap.Col,
-	                    { xs: 12, xsOffset: 1 },
+	                    null,
 	                    _react2.default.createElement(
 	                        _reactBootstrap.Panel,
-	                        { header: 'Calendar' },
+	                        { header: _react2.default.createElement(
+	                                'span',
+	                                null,
+	                                _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'calendar' }),
+	                                ' ',
+	                                'Calendar'
+	                            ) },
 	                        _react2.default.createElement(_reactBigCalendar2.default, {
 	                            events: events
 	                        })
@@ -62302,6 +62344,236 @@
 	};
 
 	exports.default = mapper;
+
+/***/ },
+/* 664 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactBootstrap = __webpack_require__(208);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Workers = _react2.default.createClass({
+	    displayName: 'Workers',
+
+	    propTypes: {
+	        store: _react2.default.PropTypes.object.isRequired
+	    },
+
+	    render: function render() {
+	        var state = this.props.store.getState();
+
+	        return _react2.default.createElement(
+	            _reactBootstrap.Grid,
+	            null,
+	            _react2.default.createElement(
+	                _reactBootstrap.Row,
+	                null,
+	                _react2.default.createElement(
+	                    _reactBootstrap.Col,
+	                    null,
+	                    _react2.default.createElement(
+	                        _reactBootstrap.Panel,
+	                        { header: _react2.default.createElement(
+	                                'span',
+	                                null,
+	                                _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'user' }),
+	                                ' ',
+	                                'Workers'
+	                            ) },
+	                        _react2.default.createElement(
+	                            _reactBootstrap.Table,
+	                            { hover: true, striped: true },
+	                            _react2.default.createElement(
+	                                'thead',
+	                                null,
+	                                _react2.default.createElement(
+	                                    'tr',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'td',
+	                                        null,
+	                                        'Id'
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'td',
+	                                        null,
+	                                        'Name'
+	                                    ),
+	                                    _react2.default.createElement('td', null)
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'tbody',
+	                                null,
+	                                state.workers.map(function (worker) {
+	                                    return _react2.default.createElement(
+	                                        'tr',
+	                                        { key: worker.id },
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            worker.id
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            worker.name
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            _react2.default.createElement('div', { className: 'pull-right' })
+	                                        )
+	                                    );
+	                                })
+	                            )
+	                        )
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	exports.default = Workers;
+
+/***/ },
+/* 665 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _moment = __webpack_require__(548);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactBootstrap = __webpack_require__(208);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Shifts = _react2.default.createClass({
+	    displayName: 'Shifts',
+
+	    propTypes: {
+	        store: _react2.default.PropTypes.object.isRequired
+	    },
+
+	    render: function render() {
+	        var state = this.props.store.getState();
+
+	        return _react2.default.createElement(
+	            _reactBootstrap.Grid,
+	            null,
+	            _react2.default.createElement(
+	                _reactBootstrap.Row,
+	                null,
+	                _react2.default.createElement(
+	                    _reactBootstrap.Col,
+	                    null,
+	                    _react2.default.createElement(
+	                        _reactBootstrap.Panel,
+	                        { header: _react2.default.createElement(
+	                                'span',
+	                                null,
+	                                _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'refresh' }),
+	                                ' ',
+	                                'Shifts'
+	                            ) },
+	                        _react2.default.createElement(
+	                            _reactBootstrap.Table,
+	                            { hover: true, striped: true },
+	                            _react2.default.createElement(
+	                                'thead',
+	                                null,
+	                                _react2.default.createElement(
+	                                    'tr',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'td',
+	                                        null,
+	                                        'Id'
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'td',
+	                                        null,
+	                                        'Name'
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'td',
+	                                        null,
+	                                        'Start'
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'td',
+	                                        null,
+	                                        'End'
+	                                    ),
+	                                    _react2.default.createElement('td', null)
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'tbody',
+	                                null,
+	                                state.shifts.map(function (shift) {
+	                                    return _react2.default.createElement(
+	                                        'tr',
+	                                        { key: shift.id },
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            shift.id
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            shift.name
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            '' + (0, _moment2.default)().hour(shift.startHour).minute(shift.startMinute).format('H:mm')
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            '' + (0, _moment2.default)().hour(shift.endHour).minute(shift.endMinute).format('H:mm')
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            _react2.default.createElement('div', { className: 'pull-right' })
+	                                        )
+	                                    );
+	                                })
+	                            )
+	                        )
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	exports.default = Shifts;
 
 /***/ }
 /******/ ]);

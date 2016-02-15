@@ -3,7 +3,7 @@ import mapper from '../mapper';
 import moment from 'moment';
 import React from 'react';
 
-import { Col, Grid, Panel, Row } from 'react-bootstrap';
+import { Col, Glyphicon, Grid, Panel, Row } from 'react-bootstrap';
 
 BigCalendar.momentLocalizer(moment);
 
@@ -19,15 +19,15 @@ const Calendar = React.createClass({
         return (
             <Grid>
                 <Row>
-                    <Col xs={12} xsOffset={1}>
-                        <Panel header="Calendar" >
+                    <Col>
+                        <Panel header={<span><Glyphicon glyph="calendar" /> {'Calendar'}</span>}>
                             <BigCalendar
                                 events={events}
                             />
                         </Panel>
                     </Col>
                 </Row>
-         </Grid>
+            </Grid>
         );
     }
 });

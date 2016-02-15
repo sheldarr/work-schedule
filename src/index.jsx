@@ -6,6 +6,8 @@ import { IndexRoute, Route, Router } from 'react-router';
 import Application from './components/application.jsx';
 import Calendar from './components/calendar.jsx';
 import NotFound from './components/notFound.jsx';
+import Workers from './components/workers.jsx';
+import Shifts from './components/shifts.jsx';
 import store from './store';
 
 const CalendarWrapper = React.createClass({
@@ -16,10 +18,28 @@ const CalendarWrapper = React.createClass({
     }
 });
 
+const WorkersWrapper = React.createClass({
+    render: function () {
+        return (
+            <Workers store={store} />
+        );
+    }
+});
+
+const ShiftsWrapper = React.createClass({
+    render: function () {
+        return (
+            <Shifts store={store} />
+        );
+    }
+});
+
 ReactDOM.render(
     <Router>
         <Route component={Application} path="/">
           <IndexRoute component={CalendarWrapper} />
+          <Route component={WorkersWrapper} path="/workers"/>
+          <Route component={ShiftsWrapper} path="/shifts"/>
           <Route component={NotFound} path="*"/>
         </Route>
     </Router>,
