@@ -1,5 +1,7 @@
 import NavigationBar from './navigationBar.jsx';
 import React from 'react';
+import Provider from 'react-redux';
+import store from '../store';
 
 const Application = React.createClass({
     propTypes: {
@@ -8,10 +10,10 @@ const Application = React.createClass({
 
     render () {
         return (
-            <div>
+            <Provider store={store}>
                 <NavigationBar/>
                 {this.props.children}
-            </div>
+            </Provider>
         );
     }
 });
