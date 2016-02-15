@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node ./server.js",
+    "test": "mocha",
     "watch": "webpack --progress --color --watch"
   },
   "repository": {
@@ -32,13 +33,12 @@
     "winston": "^2.1.1"
   },
   "dependencies": {
-    "history": "^2.0.0",
+    "history": "^1.17.0",
     "moment": "^2.11.2",
     "react": "^0.14.0",
     "react-big-calendar": "^0.9.8",
     "react-bootstrap": "^0.28.1",
     "react-dom": "^0.14.0",
-    "react-redux": "^4.4.0",
     "react-router": "^1.0.3",
     "redux": "^3.3.1"
   }
