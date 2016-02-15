@@ -23,8 +23,7 @@ const deleteModal = React.createClass({
                     <Button bsStyle="success"><Glyphicon glyph="ok"/> {'Yes'}</Button>
                     <Button bsStyle="danger"><Glyphicon glyph="remove"/> {'No'}</Button>
                 </Modal.Footer>
-
-              </Modal.Dialog>
+            </Modal.Dialog>
         );
     },
 
