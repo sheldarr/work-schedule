@@ -28,4 +28,23 @@ describe('workers reducer', () => {
 
         expect(workersAfter).toInclude(worker);
     });
+
+    it('should handle DELETE_WORKER', () => {
+        var worker = {
+            id: 1,
+            name: 'Name',
+            schedule: [{
+                dayOfYear: 1,
+                shift: 1
+            }]
+        };
+
+        var workersBefore = [worker];
+        var workersAfter = workers(workersBefore, {
+            worker: worker,
+            type: ActionTypes.DELETE_WORKER
+        });
+
+        expect(workersAfter).toExclude(worker);
+    });
 });
