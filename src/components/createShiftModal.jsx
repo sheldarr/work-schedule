@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { Button, Glyphicon, Modal } from 'react-bootstrap';
+import { Button, Glyphicon, Input, Modal } from 'react-bootstrap';
 
-const DeleteModal = React.createClass({
+const CreateShiftModal = React.createClass({
     propTypes: {
         display: React.PropTypes.bool.isRequired,
-        objectName: React.PropTypes.string.isRequired,
         onDismiss: React.PropTypes.func.isRequired,
         onSuccess: React.PropTypes.func.isRequired
     },
@@ -14,14 +13,17 @@ const DeleteModal = React.createClass({
         return (
             <Modal.Dialog>
                 <Modal.Header>
-                    <Modal.Title>{'Delete'}</Modal.Title>
+                    <Modal.Title><Glyphicon glyph="refresh"/> {'Create Shift'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {`Do you really want to remove ${this.props.objectName}?`}
+                     <Input label="Name" placeholder="Name" type="text"/>
+                     <Input label="Name" placeholder="Name" type="number"/>
+                     <Input label="Name" placeholder="Name" type="number"/>
+
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button bsStyle="success"><Glyphicon glyph="ok"/> {'Yes'}</Button>
-                    <Button bsStyle="danger"><Glyphicon glyph="remove"/> {'No'}</Button>
+                    <Button bsStyle="success"><Glyphicon glyph="ok"/> {'Create'}</Button>
+                    <Button bsStyle="danger"><Glyphicon glyph="remove"/> {'Cancel'}</Button>
                 </Modal.Footer>
             </Modal.Dialog>
         );
@@ -36,4 +38,4 @@ const DeleteModal = React.createClass({
     }
 });
 
-export default DeleteModal;
+export default CreateShiftModal;

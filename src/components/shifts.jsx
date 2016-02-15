@@ -47,7 +47,7 @@ const Shifts = React.createClass({
                                     </tr>)}
                                 </tbody>
                             </Table>
-                            <DeleteModal display={true} objectName={'shift'}/>
+                            <DeleteModal display objectName={'shift'}/>
                         </Panel>
                     </Col>
                 </Row>

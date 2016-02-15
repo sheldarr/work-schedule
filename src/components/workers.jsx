@@ -1,3 +1,4 @@
+import CreateWorkerModal from './createWorkerModal.jsx';
 import React from 'react';
 import { Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
 
@@ -36,6 +37,7 @@ const Workers = React.createClass({
                                     </tr>)}
                                 </tbody>
                             </Table>
+                            <CreateWorkerModal display/>
                         </Panel>
                     </Col>
                 </Row>

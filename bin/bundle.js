@@ -62323,6 +62323,10 @@
 	    value: true
 	});
 
+	var _createWorkerModal = __webpack_require__(669);
+
+	var _createWorkerModal2 = _interopRequireDefault(_createWorkerModal);
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -62406,7 +62410,8 @@
 	                                    );
 	                                })
 	                            )
-	                        )
+	                        ),
+	                        _react2.default.createElement(_createWorkerModal2.default, { display: true })
 	                    )
 	                )
 	            )
@@ -62634,8 +62639,8 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var deleteModal = _react2.default.createClass({
-	    displayName: 'deleteModal',
+	var DeleteModal = _react2.default.createClass({
+	    displayName: 'DeleteModal',
 
 	    propTypes: {
 	        display: _react2.default.PropTypes.bool.isRequired,
@@ -62687,7 +62692,81 @@
 	    }
 	});
 
-	exports.default = deleteModal;
+	exports.default = DeleteModal;
+
+/***/ },
+/* 669 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactBootstrap = __webpack_require__(208);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var CreateWorkerModal = _react2.default.createClass({
+	    displayName: 'CreateWorkerModal',
+
+	    propTypes: {
+	        display: _react2.default.PropTypes.bool.isRequired,
+	        onDismiss: _react2.default.PropTypes.func.isRequired,
+	        onSuccess: _react2.default.PropTypes.func.isRequired
+	    },
+
+	    renderModal: function renderModal() {
+	        return _react2.default.createElement(
+	            _reactBootstrap.Modal.Dialog,
+	            null,
+	            _react2.default.createElement(
+	                _reactBootstrap.Modal.Header,
+	                null,
+	                _react2.default.createElement(
+	                    _reactBootstrap.Modal.Title,
+	                    null,
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'user' }),
+	                    ' ',
+	                    'Create Worker'
+	                )
+	            ),
+	            _react2.default.createElement(
+	                _reactBootstrap.Modal.Body,
+	                null,
+	                _react2.default.createElement(_reactBootstrap.Input, { label: 'Name', placeholder: 'Name', type: 'text' })
+	            ),
+	            _react2.default.createElement(
+	                _reactBootstrap.Modal.Footer,
+	                null,
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'success' },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'ok' }),
+	                    ' ',
+	                    'Create'
+	                ),
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'danger' },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' }),
+	                    ' ',
+	                    'Cancel'
+	                )
+	            )
+	        );
+	    },
+	    render: function render() {
+	        return this.props.display ? this.renderModal() : null;
+	    }
+	});
+
+	exports.default = CreateWorkerModal;
 
 /***/ }
 /******/ ]);
