@@ -25,6 +25,10 @@ const Workers = React.createClass({
         this.props.store.dispatch(actions.hideCreateWorkerModal());
     },
 
+    redirectToWorkerCalendar (workerId) {
+        location.href = `#/calendar/${workerId}`;
+    },
+
     render () {
         return (
             <Grid>
@@ -48,12 +52,17 @@ const Workers = React.createClass({
                                             {worker.name}
                                         </td>
                                         <td>
+                                            <div className="pull-right">
+                                                <Button bsStyle="info" onClick={this.redirectToWorkerCalendar.bind(this, worker.id)}>
+                                                    <span><Glyphicon glyph="calendar"/> {'Show Calendar'}</span>
+                                                </Button>
+                                            </div>
                                         </td>
                                     </tr>)}
                                 </tbody>
                             </Table>
-                            <div className="pull-right" onClick={this.showCreateWorkerModal}>
-                                <Button bsStyle="success">
+                            <div className="pull-right">
+                                <Button bsStyle="success" onClick={this.showCreateWorkerModal}>
                                     <span><Glyphicon glyph="plus"/> {'Create Worker'}</span>
                                 </Button>
                             </div>

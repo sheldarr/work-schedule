@@ -61598,7 +61598,12 @@
 	    hideCreateWorkerModal: function hideCreateWorkerModal() {
 	        this.props.store.dispatch(_actions2.default.hideCreateWorkerModal());
 	    },
+	    redirectToWorkerCalendar: function redirectToWorkerCalendar(workerId) {
+	        location.href = '#/calendar/' + workerId;
+	    },
 	    render: function render() {
+	        var _this2 = this;
+
 	        return _react2.default.createElement(
 	            _reactBootstrap.Grid,
 	            null,
@@ -61656,17 +61661,35 @@
 	                                            null,
 	                                            worker.name
 	                                        ),
-	                                        _react2.default.createElement('td', null)
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'pull-right' },
+	                                                _react2.default.createElement(
+	                                                    _reactBootstrap.Button,
+	                                                    { bsStyle: 'info', onClick: _this2.redirectToWorkerCalendar.bind(_this2, worker.id) },
+	                                                    _react2.default.createElement(
+	                                                        'span',
+	                                                        null,
+	                                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'calendar' }),
+	                                                        ' ',
+	                                                        'Show Calendar'
+	                                                    )
+	                                                )
+	                                            )
+	                                        )
 	                                    );
 	                                })
 	                            )
 	                        ),
 	                        _react2.default.createElement(
 	                            'div',
-	                            { className: 'pull-right', onClick: this.showCreateWorkerModal },
+	                            { className: 'pull-right' },
 	                            _react2.default.createElement(
 	                                _reactBootstrap.Button,
-	                                { bsStyle: 'success' },
+	                                { bsStyle: 'success', onClick: this.showCreateWorkerModal },
 	                                _react2.default.createElement(
 	                                    'span',
 	                                    null,
