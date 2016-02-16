@@ -54,7 +54,7 @@ const Workers = React.createClass({
                                         <td>
                                             <div className="pull-right">
                                                 <Button bsStyle="info" onClick={this.redirectToWorkerCalendar.bind(this, worker.id)}>
-                                                    <span><Glyphicon glyph="calendar"/> {'Show Calendar'}</span>
+                                                    <span><Glyphicon glyph="calendar"/> {'Calendar'}</span>
                                                 </Button>
                                             </div>
                                         </td>

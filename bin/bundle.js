@@ -61675,7 +61675,7 @@
 	                                                        null,
 	                                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'calendar' }),
 	                                                        ' ',
-	                                                        'Show Calendar'
+	                                                        'Calendar'
 	                                                    )
 	                                                )
 	                                            )
