@@ -22,20 +22,13 @@ describe('actions', () => {
     });
 
     it('deleteWorker should create DELETE_WORKER action', () => {
-        var worker = {
-            id: 1,
-            name: 'Name',
-            schedule: [{
-                dayOfYear: 1,
-                shift: 1
-            }]
-        };
+        var workerId = 1;
 
-        var action = actions.deleteWorker(worker);
+        var action = actions.deleteWorker(workerId);
 
         expect(action).toEqual({
             type: ActionTypes.DELETE_WORKER,
-            worker
+            workerId
         });
     });
 });

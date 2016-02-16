@@ -15,10 +15,17 @@ module.exports = {
         };
     },
 
-    deleteWorker (worker) {
+    deleteShift (shiftId) {
+        return {
+            type: ActionTypes.DELETE_SHIFT,
+            shiftId
+        };
+    },
+
+    deleteWorker (workerId) {
         return {
             type: ActionTypes.DELETE_WORKER,
-            worker
+            workerId
         };
     },
 
@@ -43,6 +50,34 @@ module.exports = {
     showCreateShiftModal () {
         return {
             type: ActionTypes.SHOW_CREATE_SHIFT_MODAL
+        };
+    },
+
+    hideDeleteWorkerModal () {
+        return {
+            type: ActionTypes.HIDE_DELETE_WORKER_MODAL
+        };
+    },
+
+    showDeleteWorkerModal (objectId, objectName) {
+        return {
+            objectId,
+            objectName,
+            type: ActionTypes.SHOW_DELETE_WORKER_MODAL
+        };
+    },
+
+    hideDeleteShiftModal () {
+        return {
+            type: ActionTypes.HIDE_DELETE_SHIFT_MODAL
+        };
+    },
+
+    showDeleteShiftModal (objectId, objectName) {
+        return {
+            objectId,
+            objectName,
+            type: ActionTypes.SHOW_DELETE_SHIFT_MODAL
         };
     }
 };

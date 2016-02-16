@@ -27,6 +27,19 @@ const Shifts = React.createClass({
         this.props.store.dispatch(actions.hideCreateShiftModal());
     },
 
+    hideDeleteShiftModal () {
+        this.props.store.dispatch(actions.hideDeleteShiftModal());
+    },
+
+    showDeleteShiftModal (shiftId, shiftName) {
+        this.props.store.dispatch(actions.showDeleteShiftModal(shiftId, shiftName));
+    },
+
+    deleteShift (shiftId) {
+        this.props.store.dispatch(actions.hideDeleteShiftModal());
+        this.props.store.dispatch(actions.deleteShift(shiftId));
+    },
+
     render () {
         return (
             <Grid>
@@ -58,7 +71,11 @@ const Shifts = React.createClass({
                                             {`${moment().hour(shift.endHour).minute(shift.endMinute).format('H:mm')}`}
                                         </td>
                                         <td>
-                                            <div className="pull-right"></div>
+                                            <div className="pull-right">
+                                                <Button bsStyle="danger" onClick={this.showDeleteShiftModal.bind(this, shift.id, shift.name)}>
+                                                    <span><Glyphicon glyph="remove"/> {'Delete'}</span>
+                                                </Button>
+                                            </div>
                                         </td>
                                     </tr>)}
                                 </tbody>
@@ -76,8 +93,10 @@ const Shifts = React.createClass({
                             />
                             <DeleteModal
                                 display={this.state.modals.displayDeleteShiftModal}
-                                objectId={this.state.objectToDeleteId}
-                                objectName={this.state.objectToDeleteName}
+                                objectId={this.state.modals.objectToDeleteId}
+                                objectName={this.state.modals.objectToDeleteName}
+                                onDismiss={this.hideDeleteShiftModal}
+                                onSuccess={this.deleteShift}
                             />
                         </Panel>
                     </Col>

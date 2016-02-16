@@ -38,9 +38,11 @@ describe('workers reducer', () => {
             }]
         };
 
+        var workerId = 1;
+
         var workersBefore = [worker];
         var workersAfter = workers(workersBefore, {
-            worker: worker,
+            workerId,
             type: ActionTypes.DELETE_WORKER
         });
 

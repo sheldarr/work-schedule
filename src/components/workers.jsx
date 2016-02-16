@@ -29,6 +29,19 @@ const Workers = React.createClass({
         location.href = `#/calendar/${workerId}`;
     },
 
+    showDeleteWorkerModal (workerId, workerName) {
+        this.props.store.dispatch(actions.showDeleteWorkerModal(workerId, workerName));
+    },
+
+    hideDeleteWorkerModal () {
+        this.props.store.dispatch(actions.hideDeleteWorkerModal());
+    },
+
+    deleteWorker (workerId) {
+        this.props.store.dispatch(actions.hideDeleteWorkerModal());
+        this.props.store.dispatch(actions.deleteWorker(workerId));
+    },
+
     render () {
         return (
             <Grid>
@@ -56,6 +69,9 @@ const Workers = React.createClass({
                                                 <Button bsStyle="info" onClick={this.redirectToWorkerCalendar.bind(this, worker.id)}>
                                                     <span><Glyphicon glyph="calendar"/> {'Calendar'}</span>
                                                 </Button>
+                                                <Button bsStyle="danger" onClick={this.showDeleteWorkerModal.bind(this, worker.id, worker.name)} style={{marginLeft: 10}}>
+                                                    <span><Glyphicon glyph="remove"/> {'Delete'}</span>
+                                                </Button>
                                             </div>
                                         </td>
                                     </tr>)}
@@ -74,8 +90,10 @@ const Workers = React.createClass({
                             />
                             <DeleteModal
                                 display={this.state.modals.displayDeleteWorkerModal}
-                                objectId={this.state.objectToDeleteId}
-                                objectName={this.state.objectToDeleteName}
+                                objectId={this.state.modals.objectToDeleteId}
+                                objectName={this.state.modals.objectToDeleteName}
+                                onDismiss={this.hideDeleteWorkerModal}
+                                onSuccess={this.deleteWorker}
                             />
                         </Panel>
                     </Col>

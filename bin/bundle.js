@@ -61601,6 +61601,16 @@
 	    redirectToWorkerCalendar: function redirectToWorkerCalendar(workerId) {
 	        location.href = '#/calendar/' + workerId;
 	    },
+	    showDeleteWorkerModal: function showDeleteWorkerModal(workerId, workerName) {
+	        this.props.store.dispatch(_actions2.default.showDeleteWorkerModal(workerId, workerName));
+	    },
+	    hideDeleteWorkerModal: function hideDeleteWorkerModal() {
+	        this.props.store.dispatch(_actions2.default.hideDeleteWorkerModal());
+	    },
+	    deleteWorker: function deleteWorker(workerId) {
+	        this.props.store.dispatch(_actions2.default.hideDeleteWorkerModal());
+	        this.props.store.dispatch(_actions2.default.deleteWorker(workerId));
+	    },
 	    render: function render() {
 	        var _this2 = this;
 
@@ -61677,6 +61687,17 @@
 	                                                        ' ',
 	                                                        'Calendar'
 	                                                    )
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                    _reactBootstrap.Button,
+	                                                    { bsStyle: 'danger', onClick: _this2.showDeleteWorkerModal.bind(_this2, worker.id, worker.name), style: { marginLeft: 10 } },
+	                                                    _react2.default.createElement(
+	                                                        'span',
+	                                                        null,
+	                                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' }),
+	                                                        ' ',
+	                                                        'Delete'
+	                                                    )
 	                                                )
 	                                            )
 	                                        )
@@ -61707,8 +61728,10 @@
 	                        }),
 	                        _react2.default.createElement(_deleteModal2.default, {
 	                            display: this.state.modals.displayDeleteWorkerModal,
-	                            objectId: this.state.objectToDeleteId,
-	                            objectName: this.state.objectToDeleteName
+	                            objectId: this.state.modals.objectToDeleteId,
+	                            objectName: this.state.modals.objectToDeleteName,
+	                            onDismiss: this.hideDeleteWorkerModal,
+	                            onSuccess: this.deleteWorker
 	                        })
 	                    )
 	                )
@@ -61740,10 +61763,16 @@
 	            shift: shift
 	        };
 	    },
-	    deleteWorker: function deleteWorker(worker) {
+	    deleteShift: function deleteShift(shiftId) {
+	        return {
+	            type: ActionTypes.DELETE_SHIFT,
+	            shiftId: shiftId
+	        };
+	    },
+	    deleteWorker: function deleteWorker(workerId) {
 	        return {
 	            type: ActionTypes.DELETE_WORKER,
-	            worker: worker
+	            workerId: workerId
 	        };
 	    },
 	    hideCreateWorkerModal: function hideCreateWorkerModal() {
@@ -61765,6 +61794,30 @@
 	        return {
 	            type: ActionTypes.SHOW_CREATE_SHIFT_MODAL
 	        };
+	    },
+	    hideDeleteWorkerModal: function hideDeleteWorkerModal() {
+	        return {
+	            type: ActionTypes.HIDE_DELETE_WORKER_MODAL
+	        };
+	    },
+	    showDeleteWorkerModal: function showDeleteWorkerModal(objectId, objectName) {
+	        return {
+	            objectId: objectId,
+	            objectName: objectName,
+	            type: ActionTypes.SHOW_DELETE_WORKER_MODAL
+	        };
+	    },
+	    hideDeleteShiftModal: function hideDeleteShiftModal() {
+	        return {
+	            type: ActionTypes.HIDE_DELETE_SHIFT_MODAL
+	        };
+	    },
+	    showDeleteShiftModal: function showDeleteShiftModal(objectId, objectName) {
+	        return {
+	            objectId: objectId,
+	            objectName: objectName,
+	            type: ActionTypes.SHOW_DELETE_SHIFT_MODAL
+	        };
 	    }
 	};
 
@@ -61778,10 +61831,15 @@
 	    CREATE_WORKER: 'CREATE_WORKER',
 	    CREATE_SHIFT: 'CREATE_SHIFT',
 	    DELETE_WORKER: 'DELETE_WORKER',
+	    DELETE_SHIFT: 'DELETE_SHIFT',
 	    HIDE_CREATE_WORKER_MODAL: 'HIDE_CREATE_WORKER_MODAL',
 	    SHOW_CREATE_WORKER_MODAL: 'SHOW_CREATE_WORKER_MODAL',
 	    HIDE_CREATE_SHIFT_MODAL: 'HIDE_CREATE_SHIFT_MODAL',
-	    SHOW_CREATE_SHIFT_MODAL: 'SHOW_CREATE_SHIFT_MODAL'
+	    SHOW_CREATE_SHIFT_MODAL: 'SHOW_CREATE_SHIFT_MODAL',
+	    SHOW_DELETE_WORKER_MODAL: 'SHOW_DELETE_WORKER_MODAL',
+	    HIDE_DELETE_WORKER_MODAL: 'HIDE_DELETE_WORKER_MODAL',
+	    SHOW_DELETE_SHIFT_MODAL: 'SHOW_DELETE_SHIFT_MODAL',
+	    HIDE_DELETE_SHIFT_MODAL: 'HIDE_DELETE_SHIFT_MODAL'
 	};
 
 /***/ },
@@ -61924,11 +61982,19 @@
 
 	    propTypes: {
 	        display: _react2.default.PropTypes.bool.isRequired,
+	        objectId: _react2.default.PropTypes.number.isRequired,
 	        objectName: _react2.default.PropTypes.string.isRequired,
 	        onDismiss: _react2.default.PropTypes.func.isRequired,
 	        onSuccess: _react2.default.PropTypes.func.isRequired
 	    },
 
+	    success: function success() {
+	        if (!this.props.objectId) {
+	            return;
+	        }
+
+	        this.props.onSuccess(this.props.objectId);
+	    },
 	    render: function render() {
 	        return _react2.default.createElement(
 	            _reactBootstrap.Modal,
@@ -61952,7 +62018,7 @@
 	                null,
 	                _react2.default.createElement(
 	                    _reactBootstrap.Button,
-	                    { bsStyle: 'success' },
+	                    { bsStyle: 'success', onClick: this.success },
 	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'ok' }),
 	                    ' ',
 	                    'Yes'
@@ -62027,7 +62093,19 @@
 	    hideCreateShiftModal: function hideCreateShiftModal() {
 	        this.props.store.dispatch(_actions2.default.hideCreateShiftModal());
 	    },
+	    hideDeleteShiftModal: function hideDeleteShiftModal() {
+	        this.props.store.dispatch(_actions2.default.hideDeleteShiftModal());
+	    },
+	    showDeleteShiftModal: function showDeleteShiftModal(shiftId, shiftName) {
+	        this.props.store.dispatch(_actions2.default.showDeleteShiftModal(shiftId, shiftName));
+	    },
+	    deleteShift: function deleteShift(shiftId) {
+	        this.props.store.dispatch(_actions2.default.hideDeleteShiftModal());
+	        this.props.store.dispatch(_actions2.default.deleteShift(shiftId));
+	    },
 	    render: function render() {
+	        var _this2 = this;
+
 	        return _react2.default.createElement(
 	            _reactBootstrap.Grid,
 	            null,
@@ -62108,7 +62186,21 @@
 	                                        _react2.default.createElement(
 	                                            'td',
 	                                            null,
-	                                            _react2.default.createElement('div', { className: 'pull-right' })
+	                                            _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'pull-right' },
+	                                                _react2.default.createElement(
+	                                                    _reactBootstrap.Button,
+	                                                    { bsStyle: 'danger', onClick: _this2.showDeleteShiftModal.bind(_this2, shift.id, shift.name) },
+	                                                    _react2.default.createElement(
+	                                                        'span',
+	                                                        null,
+	                                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' }),
+	                                                        ' ',
+	                                                        'Delete'
+	                                                    )
+	                                                )
+	                                            )
 	                                        )
 	                                    );
 	                                })
@@ -62137,8 +62229,10 @@
 	                        }),
 	                        _react2.default.createElement(_deleteModal2.default, {
 	                            display: this.state.modals.displayDeleteShiftModal,
-	                            objectId: this.state.objectToDeleteId,
-	                            objectName: this.state.objectToDeleteName
+	                            objectId: this.state.modals.objectToDeleteId,
+	                            objectName: this.state.modals.objectToDeleteName,
+	                            onDismiss: this.hideDeleteShiftModal,
+	                            onSuccess: this.deleteShift
 	                        })
 	                    )
 	                )
@@ -65140,7 +65234,9 @@
 	    displayCreateWorkerModal: false,
 	    displayCreateShiftModal: false,
 	    displayDeleteWorkerModal: false,
-	    displayDeleteShiftModal: false
+	    displayDeleteShiftModal: false,
+	    objectToDeleteId: 0,
+	    objectToDeleteName: ''
 	};
 
 	module.exports = function () {
@@ -65152,10 +65248,34 @@
 	            return Object.assign({}, state, { displayCreateWorkerModal: false });
 	        case _ActionTypes2.default.SHOW_CREATE_WORKER_MODAL:
 	            return Object.assign({}, state, { displayCreateWorkerModal: true });
+	        case _ActionTypes2.default.HIDE_DELETE_WORKER_MODAL:
+	            return Object.assign({}, state, {
+	                displayDeleteWorkerModal: false,
+	                objectToDeleteId: 0,
+	                objectToDeleteName: ''
+	            });
+	        case _ActionTypes2.default.SHOW_DELETE_WORKER_MODAL:
+	            return Object.assign({}, state, {
+	                displayDeleteWorkerModal: true,
+	                objectToDeleteId: action.objectId,
+	                objectToDeleteName: action.objectName
+	            });
 	        case _ActionTypes2.default.HIDE_CREATE_SHIFT_MODAL:
 	            return Object.assign({}, state, { displayCreateShiftModal: false });
 	        case _ActionTypes2.default.SHOW_CREATE_SHIFT_MODAL:
 	            return Object.assign({}, state, { displayCreateShiftModal: true });
+	        case _ActionTypes2.default.HIDE_DELETE_SHIFT_MODAL:
+	            return Object.assign({}, state, {
+	                displayDeleteShiftModal: false,
+	                objectToDeleteId: 0,
+	                objectToDeleteName: ''
+	            });
+	        case _ActionTypes2.default.SHOW_DELETE_SHIFT_MODAL:
+	            return Object.assign({}, state, {
+	                displayDeleteShiftModal: true,
+	                objectToDeleteId: action.objectId,
+	                objectToDeleteName: action.objectName
+	            });
 	        default:
 	            return state;
 	    }
@@ -65192,6 +65312,13 @@
 	                id: state.length ? (_Math = Math).max.apply(_Math, _toConsumableArray(ids)) + 1 : 1
 	            });
 	            return [action.shift].concat(_toConsumableArray(state));
+
+	        case _ActionTypes2.default.DELETE_SHIFT:
+	            var shift = state.find(function (shift) {
+	                return shift.id === action.shiftId;
+	            });
+	            var index = state.indexOf(shift);
+	            return state.slice(0, index).concat(state.slice(index + 1));
 
 	        default:
 	            return state;
@@ -65231,7 +65358,10 @@
 	            return [action.worker].concat(_toConsumableArray(state));
 
 	        case _ActionTypes2.default.DELETE_WORKER:
-	            var index = state.indexOf(action.worker);
+	            var worker = state.find(function (worker) {
+	                return worker.id === action.workerId;
+	            });
+	            var index = state.indexOf(worker);
 	            return state.slice(0, index).concat(state.slice(index + 1));
 
 	        default:

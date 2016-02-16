@@ -14,7 +14,10 @@ module.exports = (state = initialState, action) => {
         return [action.worker, ...state];
 
     case ActionTypes.DELETE_WORKER:
-        var index = state.indexOf(action.worker);
+        var worker = state.find((worker) => {
+            return worker.id === action.workerId;
+        });
+        var index = state.indexOf(worker);
         return state.slice(0, index).concat(state.slice(index + 1));
 
     default:
