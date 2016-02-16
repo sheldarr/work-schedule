@@ -9,18 +9,57 @@ const CreateWorkerModal = React.createClass({
         onSuccess: React.PropTypes.func.isRequired
     },
 
+    getInitialState () {
+        return Object.assign({}, this.initialState);
+    },
+
+    dismiss () {
+        this.setState(Object.assign({}, this.initialState));
+        this.props.onDismiss();
+    },
+
+    initialState: {
+        name: '',
+        validate: false
+    },
+
+    handleNameChange (event) {
+        this.setState({
+            name: event.target.value,
+            validate: true
+        });
+    },
+
+    validateName () {
+        if (!this.state.validate) {
+            return '';
+        }
+
+        if (this.state.name === '') {
+            return 'error';
+        }
+
+        return 'success';
+    },
+
     render () {
         return (
-            <Modal onHide={this.props.onDismiss} show={this.props.display}>
+            <Modal onHide={this.dismiss} show={this.props.display}>
                 <Modal.Header closeButton>
                     <Modal.Title><Glyphicon glyph="user"/> {'Create Worker'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                     <Input label="Name" placeholder="Name" type="text"/>
+                     <Input
+                         bsStyle={this.validateName()}
+                         label="Name"
+                         onChange={this.handleNameChange}
+                         placeholder="Name"
+                         type="text"
+                     />
                 </Modal.Body>
                 <Modal.Footer>
                     <Button bsStyle="success"><Glyphicon glyph="ok"/> {'Create'}</Button>
-                    <Button bsStyle="danger" onClick={this.props.onDismiss}><Glyphicon glyph="remove"/> {'Cancel'}</Button>
+                    <Button bsStyle="danger" onClick={this.dismiss}><Glyphicon glyph="remove"/> {'Cancel'}</Button>
                 </Modal.Footer>
             </Modal>
         );

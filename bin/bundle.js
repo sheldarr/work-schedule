@@ -61724,10 +61724,41 @@
 	        onSuccess: _react2.default.PropTypes.func.isRequired
 	    },
 
+	    getInitialState: function getInitialState() {
+	        return Object.assign({}, this.initialState);
+	    },
+	    dismiss: function dismiss() {
+	        this.setState(Object.assign({}, this.initialState));
+	        this.props.onDismiss();
+	    },
+
+
+	    initialState: {
+	        name: '',
+	        validate: false
+	    },
+
+	    handleNameChange: function handleNameChange(event) {
+	        this.setState({
+	            name: event.target.value,
+	            validate: true
+	        });
+	    },
+	    validateName: function validateName() {
+	        if (!this.state.validate) {
+	            return '';
+	        }
+
+	        if (this.state.name === '') {
+	            return 'error';
+	        }
+
+	        return 'success';
+	    },
 	    render: function render() {
 	        return _react2.default.createElement(
 	            _reactBootstrap.Modal,
-	            { onHide: this.props.onDismiss, show: this.props.display },
+	            { onHide: this.dismiss, show: this.props.display },
 	            _react2.default.createElement(
 	                _reactBootstrap.Modal.Header,
 	                { closeButton: true },
@@ -61742,7 +61773,13 @@
 	            _react2.default.createElement(
 	                _reactBootstrap.Modal.Body,
 	                null,
-	                _react2.default.createElement(_reactBootstrap.Input, { label: 'Name', placeholder: 'Name', type: 'text' })
+	                _react2.default.createElement(_reactBootstrap.Input, {
+	                    bsStyle: this.validateName(),
+	                    label: 'Name',
+	                    onChange: this.handleNameChange,
+	                    placeholder: 'Name',
+	                    type: 'text'
+	                })
 	            ),
 	            _react2.default.createElement(
 	                _reactBootstrap.Modal.Footer,
@@ -61756,7 +61793,7 @@
 	                ),
 	                _react2.default.createElement(
 	                    _reactBootstrap.Button,
-	                    { bsStyle: 'danger', onClick: this.props.onDismiss },
+	                    { bsStyle: 'danger', onClick: this.dismiss },
 	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' }),
 	                    ' ',
 	                    'Cancel'
