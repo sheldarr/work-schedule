@@ -72,6 +72,10 @@
 
 	var _workers2 = _interopRequireDefault(_workers);
 
+	var _schedule = __webpack_require__(691);
+
+	var _schedule2 = _interopRequireDefault(_schedule);
+
 	var _shifts = __webpack_require__(654);
 
 	var _shifts2 = _interopRequireDefault(_shifts);
@@ -102,6 +106,18 @@
 	    }
 	});
 
+	var ScheduleWrapper = _react2.default.createClass({
+	    displayName: 'ScheduleWrapper',
+
+	    propTypes: {
+	        params: _react2.default.PropTypes.object
+	    },
+
+	    render: function render() {
+	        return _react2.default.createElement(_schedule2.default, { params: this.props.params, store: _store2.default });
+	    }
+	});
+
 	var ShiftsWrapper = _react2.default.createClass({
 	    displayName: 'ShiftsWrapper',
 
@@ -117,8 +133,9 @@
 	        _reactRouter.Route,
 	        { component: _application2.default, path: '/' },
 	        _react2.default.createElement(_reactRouter.IndexRoute, { component: CalendarWrapper }),
-	        _react2.default.createElement(_reactRouter.Route, { component: CalendarWrapper, path: '/calendar/:workerId' }),
+	        _react2.default.createElement(_reactRouter.Route, { component: CalendarWrapper, path: '/workers/:workerId/calendar' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: WorkersWrapper, path: '/workers' }),
+	        _react2.default.createElement(_reactRouter.Route, { component: ScheduleWrapper, path: '/workers/:workerId/schedule' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: ShiftsWrapper, path: '/shifts' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: _notFound2.default, path: '*' })
 	    )
@@ -41158,6 +41175,9 @@
 	            return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10);
 	        }.bind(this));
 	    },
+	    goBack: function goBack() {
+	        location.href = '#/workers';
+	    },
 	    render: function render() {
 	        var state = this.props.store.getState();
 
@@ -41184,7 +41204,18 @@
 	                            ) },
 	                        _react2.default.createElement(_reactBigCalendar2.default, {
 	                            events: events
-	                        })
+	                        }),
+	                        this.props.params.workerId ? _react2.default.createElement(
+	                            _reactBootstrap.Button,
+	                            { bsStyle: 'primary', onClick: this.goBack, style: { marginTop: 10 } },
+	                            _react2.default.createElement(
+	                                'span',
+	                                null,
+	                                _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'arrow-left' }),
+	                                ' ',
+	                                'Go Back'
+	                            )
+	                        ) : null
 	                    )
 	                )
 	            )
@@ -61599,7 +61630,10 @@
 	        this.props.store.dispatch(_actions2.default.hideCreateWorkerModal());
 	    },
 	    redirectToWorkerCalendar: function redirectToWorkerCalendar(workerId) {
-	        location.href = '#/calendar/' + workerId;
+	        location.href = '#/workers/' + workerId + '/calendar';
+	    },
+	    redirectToWorkerSchedule: function redirectToWorkerSchedule(workerId) {
+	        location.href = '#/workers/' + workerId + '/schedule';
 	    },
 	    showDeleteWorkerModal: function showDeleteWorkerModal(workerId, workerName) {
 	        this.props.store.dispatch(_actions2.default.showDeleteWorkerModal(workerId, workerName));
@@ -61679,7 +61713,18 @@
 	                                                { className: 'pull-right' },
 	                                                _react2.default.createElement(
 	                                                    _reactBootstrap.Button,
-	                                                    { bsStyle: 'info', onClick: _this2.redirectToWorkerCalendar.bind(_this2, worker.id) },
+	                                                    { bsStyle: 'info', onClick: _this2.redirectToWorkerSchedule.bind(_this2, worker.id), style: { marginLeft: 10 } },
+	                                                    _react2.default.createElement(
+	                                                        'span',
+	                                                        null,
+	                                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'time' }),
+	                                                        ' ',
+	                                                        'Schedule'
+	                                                    )
+	                                                ),
+	                                                _react2.default.createElement(
+	                                                    _reactBootstrap.Button,
+	                                                    { bsStyle: 'info', onClick: _this2.redirectToWorkerCalendar.bind(_this2, worker.id), style: { marginLeft: 10 } },
 	                                                    _react2.default.createElement(
 	                                                        'span',
 	                                                        null,
@@ -65466,6 +65511,365 @@
 			"endMinute": 59
 		}
 	];
+
+/***/ },
+/* 691 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _actions = __webpack_require__(650);
+
+	var _actions2 = _interopRequireDefault(_actions);
+
+	var _linkShiftModal = __webpack_require__(693);
+
+	var _linkShiftModal2 = _interopRequireDefault(_linkShiftModal);
+
+	var _deleteModal = __webpack_require__(653);
+
+	var _deleteModal2 = _interopRequireDefault(_deleteModal);
+
+	var _moment = __webpack_require__(549);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactBootstrap = __webpack_require__(208);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var Schedule = _react2.default.createClass({
+	    displayName: 'Schedule',
+
+	    propTypes: {
+	        params: _react2.default.PropTypes.object,
+	        store: _react2.default.PropTypes.object.isRequired
+	    },
+
+	    componentWillMount: function componentWillMount() {
+	        var _this = this;
+
+	        this.setState(this.props.store.getState());
+
+	        this.props.store.subscribe(function () {
+	            _this.setState(_this.props.store.getState());
+	        });
+	    },
+	    showLinkShiftModal: function showLinkShiftModal() {
+	        this.props.store.dispatch(_actions2.default.showLinkShiftModal());
+	    },
+	    hideLinkShiftModal: function hideLinkShiftModal() {
+	        this.props.store.dispatch(_actions2.default.hideLinkShiftModal());
+	    },
+	    showDeleteShiftLinkModal: function showDeleteShiftLinkModal(dayOfYear) {
+	        this.props.store.dispatch(_actions2.default.showDeleteShiftLinkModal(dayOfYear));
+	    },
+	    hideDeleteShiftLinkModal: function hideDeleteShiftLinkModal() {
+	        this.props.store.dispatch(_actions2.default.hideDeleteShiftLinkModal());
+	    },
+	    deleteShiftLink: function deleteShiftLink(dayOfYear) {
+	        this.props.store.dispatch(_actions2.default.hideDeleteShiftLinkModal());
+	        this.props.store.dispatch(_actions2.default.deleteShiftLink(dayOfYear));
+	    },
+	    getWorker: function getWorker() {
+	        return this.state.workers.find(function (worker) {
+	            return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10);
+	        }.bind(this));
+	    },
+	    getShift: function getShift(shiftId) {
+	        return this.state.shifts.find(function (shift) {
+	            return parseInt(shift.id, 10) === parseInt(shiftId, 10);
+	        });
+	    },
+	    goBack: function goBack() {
+	        location.href = '#/workers';
+	    },
+	    render: function render() {
+	        var _this2 = this;
+
+	        var worker = this.getWorker();
+
+	        return _react2.default.createElement(
+	            _reactBootstrap.Grid,
+	            null,
+	            _react2.default.createElement(
+	                _reactBootstrap.Row,
+	                null,
+	                _react2.default.createElement(
+	                    _reactBootstrap.Col,
+	                    null,
+	                    _react2.default.createElement(
+	                        _reactBootstrap.Panel,
+	                        { header: _react2.default.createElement(
+	                                'span',
+	                                null,
+	                                _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'time' }),
+	                                ' ',
+	                                'Schedule'
+	                            ) },
+	                        _react2.default.createElement(
+	                            _reactBootstrap.Table,
+	                            { hover: true, striped: true },
+	                            _react2.default.createElement(
+	                                'thead',
+	                                null,
+	                                _react2.default.createElement(
+	                                    'tr',
+	                                    null,
+	                                    _react2.default.createElement(
+	                                        'td',
+	                                        null,
+	                                        'Date'
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'td',
+	                                        null,
+	                                        'Shift'
+	                                    ),
+	                                    _react2.default.createElement('td', null)
+	                                )
+	                            ),
+	                            _react2.default.createElement(
+	                                'tbody',
+	                                null,
+	                                worker.schedule.map(function (shiftLink) {
+	                                    return _react2.default.createElement(
+	                                        'tr',
+	                                        { key: shiftLink.dayOfYear + '_' + shiftLink.shiftId },
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            (0, _moment2.default)().dayOfYear(shiftLink.dayOfYear).format('D.MM.YYYY')
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            _this2.getShift(shiftLink.shiftId).name
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            _react2.default.createElement(
+	                                                'div',
+	                                                { className: 'pull-right' },
+	                                                _react2.default.createElement(
+	                                                    _reactBootstrap.Button,
+	                                                    { bsStyle: 'danger', onClick: _this2.showDeleteShiftLinkModal.bind(_this2, shiftLink.dayOfYear) },
+	                                                    _react2.default.createElement(
+	                                                        'span',
+	                                                        null,
+	                                                        _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' }),
+	                                                        ' ',
+	                                                        'Delete'
+	                                                    )
+	                                                )
+	                                            )
+	                                        )
+	                                    );
+	                                })
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            _reactBootstrap.Button,
+	                            { bsStyle: 'primary', onClick: this.goBack },
+	                            _react2.default.createElement(
+	                                'span',
+	                                null,
+	                                _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'arrow-left' }),
+	                                ' ',
+	                                'Go Back'
+	                            )
+	                        ),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'pull-right' },
+	                            _react2.default.createElement(
+	                                _reactBootstrap.Button,
+	                                { bsStyle: 'success', onClick: this.showCreateWorkerModal },
+	                                _react2.default.createElement(
+	                                    'span',
+	                                    null,
+	                                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'link' }),
+	                                    ' ',
+	                                    'Link Shift'
+	                                )
+	                            )
+	                        ),
+	                        _react2.default.createElement(_linkShiftModal2.default, {
+	                            display: this.state.modals.displayLinkShiftModal,
+	                            onDismiss: this.hideLinkShiftModal,
+	                            onSuccess: this.hideLinkShiftModal,
+	                            store: this.props.store
+	                        }),
+	                        _react2.default.createElement(_deleteModal2.default, {
+	                            display: this.state.modals.displayDeleteShiftLink,
+	                            objectId: this.state.modals.objectToDeleteId,
+	                            objectName: this.state.modals.objectToDeleteName,
+	                            onDismiss: this.hideDeleteShiftLinkModal,
+	                            onSuccess: this.deleteShiftLink
+	                        })
+	                    )
+	                )
+	            )
+	        );
+	    }
+	});
+
+	exports.default = Schedule;
+
+/***/ },
+/* 692 */,
+/* 693 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _actions = __webpack_require__(650);
+
+	var _actions2 = _interopRequireDefault(_actions);
+
+	var _reactBootstrapDatetimepicker = __webpack_require__(656);
+
+	var _reactBootstrapDatetimepicker2 = _interopRequireDefault(_reactBootstrapDatetimepicker);
+
+	var _moment = __webpack_require__(549);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactBootstrap = __webpack_require__(208);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var LinkShiftModal = _react2.default.createClass({
+	    displayName: 'LinkShiftModal',
+
+	    propTypes: {
+	        display: _react2.default.PropTypes.bool.isRequired,
+	        onDismiss: _react2.default.PropTypes.func.isRequired,
+	        onSuccess: _react2.default.PropTypes.func.isRequired,
+	        store: _react2.default.PropTypes.object.isRequired
+	    },
+
+	    getInitialState: function getInitialState() {
+	        return Object.assign({}, this.initialState);
+	    },
+
+
+	    initialState: {
+	        dayOfYear: (0, _moment2.default)().dayOfYear(),
+	        shiftId: 0
+	    },
+
+	    dismiss: function dismiss() {
+	        this.setState(Object.assign({}, this.initialState));
+	        this.props.onDismiss();
+	    },
+	    link: function link() {
+	        this.props.store.dispatch(_actions2.default.linkShift({
+	            dayOfYear: this.state.dayOfYear,
+	            shiftId: this.state.shiftId,
+	            workerId: this.props.params.workerId
+	        }));
+	        this.props.onSuccess();
+	    },
+	    handleDayOfYearChange: function handleDayOfYearChange(event) {
+	        this.setState({
+	            dayOfYear: event.target.value,
+	            validate: true
+	        });
+	    },
+	    handleShiftChange: function handleShiftChange(event) {
+	        this.setState({
+	            shiftId: event.target.value,
+	            validate: true
+	        });
+	    },
+	    validateShift: function validateShift() {
+	        if (!this.state.validate) {
+	            return null;
+	        }
+
+	        if (!this.state.shiftId) {
+	            return 'error';
+	        }
+
+	        return 'success';
+	    },
+	    validateLink: function validateLink() {
+	        return this.validateShift();
+	    },
+	    render: function render() {
+	        return _react2.default.createElement(
+	            _reactBootstrap.Modal,
+	            { onHide: this.props.onDismiss, show: this.props.display },
+	            _react2.default.createElement(
+	                _reactBootstrap.Modal.Header,
+	                { closeButton: true },
+	                _react2.default.createElement(
+	                    _reactBootstrap.Modal.Title,
+	                    null,
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'time' }),
+	                    ' ',
+	                    'Link Schedule'
+	                )
+	            ),
+	            _react2.default.createElement(
+	                _reactBootstrap.Modal.Body,
+	                null,
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'form-group has-success' },
+	                    _react2.default.createElement(
+	                        'label',
+	                        { className: 'control-label' },
+	                        _react2.default.createElement(
+	                            'span',
+	                            null,
+	                            'Date'
+	                        )
+	                    ),
+	                    _react2.default.createElement(_reactBootstrapDatetimepicker2.default, { inputProps: { disabled: true }, onChange: this.handleDayOfYearChange })
+	                )
+	            ),
+	            _react2.default.createElement(
+	                _reactBootstrap.Modal.Footer,
+	                null,
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'success', disabled: !this.validateLink(), onClick: this.link },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'ok' }),
+	                    ' ',
+	                    'Link'
+	                ),
+	                _react2.default.createElement(
+	                    _reactBootstrap.Button,
+	                    { bsStyle: 'danger', onClick: this.dismiss },
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' }),
+	                    ' ',
+	                    'Cancel'
+	                )
+	            )
+	        );
+	    }
+	});
+
+	exports.default = LinkShiftModal;
 
 /***/ }
 /******/ ]);

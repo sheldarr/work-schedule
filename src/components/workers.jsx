@@ -26,7 +26,11 @@ const Workers = React.createClass({
     },
 
     redirectToWorkerCalendar (workerId) {
-        location.href = `#/calendar/${workerId}`;
+        location.href = `#/workers/${workerId}/calendar`;
+    },
+
+    redirectToWorkerSchedule (workerId) {
+        location.href = `#/workers/${workerId}/schedule`;
     },
 
     showDeleteWorkerModal (workerId, workerName) {
@@ -66,7 +70,10 @@ const Workers = React.createClass({
                                         </td>
                                         <td>
                                             <div className="pull-right">
-                                                <Button bsStyle="info" onClick={this.redirectToWorkerCalendar.bind(this, worker.id)}>
+                                                <Button bsStyle="info" onClick={this.redirectToWorkerSchedule.bind(this, worker.id)} style={{marginLeft: 10}}>
+                                                    <span><Glyphicon glyph="time"/> {'Schedule'}</span>
+                                                </Button>
+                                                <Button bsStyle="info" onClick={this.redirectToWorkerCalendar.bind(this, worker.id)} style={{marginLeft: 10}}>
                                                     <span><Glyphicon glyph="calendar"/> {'Calendar'}</span>
                                                 </Button>
                                                 <Button bsStyle="danger" onClick={this.showDeleteWorkerModal.bind(this, worker.id, worker.name)} style={{marginLeft: 10}}>

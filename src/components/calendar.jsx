@@ -3,7 +3,7 @@ import mapper from '../mapper';
 import moment from 'moment';
 import React from 'react';
 
-import { Col, Glyphicon, Grid, Panel, Row } from 'react-bootstrap';
+import { Button, Col, Glyphicon, Grid, Panel, Row } from 'react-bootstrap';
 
 BigCalendar.momentLocalizer(moment);
 
@@ -23,6 +23,10 @@ const Calendar = React.createClass({
         return state.workers.find(function (worker) { return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10); }.bind(this));
     },
 
+    goBack () {
+        location.href = `#/workers`;
+    },
+
     render () {
         var state = this.props.store.getState();
 
@@ -37,6 +41,11 @@ const Calendar = React.createClass({
                             <BigCalendar
                                 events={events}
                             />
+                            {this.props.params.workerId
+                                ? <Button bsStyle="primary" onClick={this.goBack} style={{marginTop: 10}}>
+                                    <span><Glyphicon glyph="arrow-left"/> {'Go Back'}</span>
+                                </Button>
+                                : null}
                         </Panel>
                     </Col>
                 </Row>

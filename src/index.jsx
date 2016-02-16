@@ -7,6 +7,7 @@ import Application from './components/application.jsx';
 import Calendar from './components/calendar.jsx';
 import NotFound from './components/notFound.jsx';
 import Workers from './components/workers.jsx';
+import Schedule from './components/schedule.jsx';
 import Shifts from './components/shifts.jsx';
 import store from './store';
 
@@ -30,6 +31,18 @@ const WorkersWrapper = React.createClass({
     }
 });
 
+const ScheduleWrapper = React.createClass({
+    propTypes: {
+        params: React.PropTypes.object
+    },
+
+    render: function () {
+        return (
+            <Schedule params={this.props.params} store={store}/>
+        );
+    }
+});
+
 const ShiftsWrapper = React.createClass({
     render: function () {
         return (
@@ -42,8 +55,9 @@ ReactDOM.render(
     <Router>
         <Route component={Application} path="/">
             <IndexRoute component={CalendarWrapper}/>
-            <Route component={CalendarWrapper} path="/calendar/:workerId"/>
+            <Route component={CalendarWrapper} path="/workers/:workerId/calendar"/>
             <Route component={WorkersWrapper} path="/workers"/>
+            <Route component={ScheduleWrapper} path="/workers/:workerId/schedule"/>
             <Route component={ShiftsWrapper} path="/shifts"/>
             <Route component={NotFound} path="*"/>
         </Route>
