@@ -1,6 +1,7 @@
 import DateTimeField from 'react-bootstrap-datetimepicker';
 import moment from 'moment';
 import React from 'react';
+import request from 'superagent';
 import { Button, Glyphicon, Input, Modal } from 'react-bootstrap';
 
 const LinkShiftModal = React.createClass({
@@ -8,7 +9,6 @@ const LinkShiftModal = React.createClass({
         display: React.PropTypes.bool.isRequired,
         onDismiss: React.PropTypes.func.isRequired,
         onSuccess: React.PropTypes.func.isRequired,
-        store: React.PropTypes.object.isRequired,
         workerId: React.PropTypes.number.isRequired
     },
 
@@ -16,9 +16,28 @@ const LinkShiftModal = React.createClass({
         return Object.assign({}, this.initialState);
     },
 
+    componentWillMount () {
+        this.downloadShifts();
+    },
+
+    downloadShifts () {
+        request
+            .get('http://127.0.0.1:5000/shift')
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    alert('Api Error');
+                } else {
+                    this.setState({
+                        shifts: response.body.shifts
+                    });
+                }
+            });
+    },
+
     initialState: {
         dayOfYear: moment().dayOfYear(),
         shiftId: 0,
+        shifts: [],
         validate: false
     },
 
@@ -28,12 +47,21 @@ const LinkShiftModal = React.createClass({
     },
 
     link () {
-        this.props.store.dispatch(actions.linkShift({
-            dayOfYear: this.state.dayOfYear,
-            shiftId: this.state.shiftId,
-            workerId: this.props.workerId
-        }));
-        this.props.onSuccess();
+        request
+            .post('http://127.0.0.1:5000/link')
+            .send({
+                dayOfYear: this.state.dayOfYear,
+                shiftId: this.state.shiftId,
+                workerId: this.props.workerId
+            })
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    this.props.onDismiss();
+                    alert('Api Error');
+                } else {
+                    this.props.onSuccess();
+                }
+            });
     },
 
     handleDayOfYearChange (date) {
@@ -67,8 +95,6 @@ const LinkShiftModal = React.createClass({
     },
 
     render () {
-        var state = this.props.store.getState();
-
         return (
             <Modal onHide={this.props.onDismiss} show={this.props.display}>
                 <Modal.Header closeButton>
@@ -89,7 +115,7 @@ const LinkShiftModal = React.createClass({
                         type="select"
                     >
                         <option disabled value="0">{'---Select Shift---'}</option>
-                        {state.shifts.map((shift) => {
+                        {this.state.shifts.map((shift) => {
                             return <option key={shift.id} value={shift.id}>{shift.name}</option>;
                         })}
                     </Input>

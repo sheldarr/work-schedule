@@ -2,51 +2,98 @@ import LinkShiftModal from './linkShiftModal.jsx';
 import DeleteModal from './deleteModal.jsx';
 import moment from 'moment';
 import React from 'react';
+import request from 'superagent';
 import { Button, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
 
 const Schedule = React.createClass({
     propTypes: {
-        params: React.PropTypes.object,
-        store: React.PropTypes.object.isRequired
+        params: React.PropTypes.object
+    },
+
+    getInitialState () {
+        return {
+            displayLinkShiftModal: false,
+            displayDeleteShiftLinkModal: false,
+            worker: {
+                id: 0,
+                name: '',
+                schedule: []
+            },
+            objectToDeleteId: 0,
+            objectToDeleteName: ''
+        };
     },
 
     componentWillMount () {
-        this.setState(this.props.store.getState());
+        this.downloadWorkers();
+        this.downloadShifts();
+    },
 
-        this.props.store.subscribe(() => {
-            this.setState(this.props.store.getState());
-        });
+    downloadWorkers () {
+        request
+            .get('http://127.0.0.1:5000/worker')
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    alert('Api Error');
+                } else {
+                    this.setState({
+                        worker: response.body.workers.find(function (worker) { return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10); }.bind(this))
+                    });
+                }
+            });
+    },
+
+    downloadShifts () {
+        request
+            .get('http://127.0.0.1:5000/shift')
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    alert('Api Error');
+                } else {
+                    this.setState({
+                        shifts: response.body.shifts
+                    });
+                }
+            });
     },
 
     showLinkShiftModal () {
-        this.props.store.dispatch(actions.showLinkShiftModal());
+        this.setState({ displayLinkShiftModal: true });
     },
 
     hideLinkShiftModal () {
-        this.props.store.dispatch(actions.hideLinkShiftModal());
+        this.setState({ displayLinkShiftModal: false });
     },
 
     showDeleteShiftLinkModal (dayOfYear) {
-        this.props.store.dispatch(actions.showDeleteShiftLinkModal(dayOfYear));
+        this.setState({
+            displayDeleteShiftLinkModal: true,
+            objectToDeleteId: dayOfYear,
+            objectToDeleteName: `day ${dayOfYear} shift`
+        });
     },
 
     hideDeleteShiftLinkModal () {
-        this.props.store.dispatch(actions.hideDeleteShiftLinkModal());
+        this.setState({
+            displayDeleteShiftLinkModal: true,
+            objectToDeleteId: 0,
+            objectToDeleteName: ''
+        });
     },
 
     deleteShiftLink (dayOfYear) {
-        this.props.store.dispatch(actions.hideDeleteShiftLinkModal());
+        this.hideDeleteShiftLinkModal();
         this.props.store.dispatch(actions.deleteShiftLink(parseInt(this.props.params.workerId, 10), dayOfYear));
     },
 
-    getWorker () {
-        return this.state.workers.find(function (worker) { return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10); }.bind(this));
-    },
+    getShiftName (shiftId) {
+        if (!this.state.shifts) {
+            return '';
+        }
 
-    getShift (shiftId) {
         return this.state.shifts.find((shift) => {
             return parseInt(shift.id, 10) === parseInt(shiftId, 10);
-        });
+        }).name;
     },
 
     goBack () {
@@ -54,8 +101,6 @@ const Schedule = React.createClass({
     },
 
     render () {
-        var worker = this.getWorker();
-
         return (
             <Grid>
                 <Row>
@@ -71,7 +116,7 @@ const Schedule = React.createClass({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {worker.schedule.map(shiftLink => <tr key={`${shiftLink.dayOfYear}_${shiftLink.shiftId}`}>
+                                    {this.state.worker.schedule.map(shiftLink => <tr key={`${shiftLink.dayOfYear}_${shiftLink.shiftId}`}>
                                         <td>
                                             {moment().dayOfYear(shiftLink.dayOfYear).format('D.MM.YYYY')}
                                         </td>
@@ -79,7 +124,7 @@ const Schedule = React.createClass({
                                             {shiftLink.dayOfYear}
                                         </td>
                                         <td>
-                                            {this.getShift(shiftLink.shiftId).name}
+                                            {this.getShiftName(shiftLink.shiftId)}
                                         </td>
                                         <td>
                                             <div className="pull-right">
@@ -100,16 +145,15 @@ const Schedule = React.createClass({
                                 </Button>
                             </div>
                             <LinkShiftModal
-                                display={this.state.modals.displayLinkShiftModal}
+                                display={this.state.displayLinkShiftModal}
                                 onDismiss={this.hideLinkShiftModal}
                                 onSuccess={this.hideLinkShiftModal}
-                                store={this.props.store}
                                 workerId={parseInt(this.props.params.workerId, 10)}
                             />
                             <DeleteModal
-                                display={this.state.modals.displayDeleteShiftLinkModal}
-                                objectId={this.state.modals.objectToDeleteId}
-                                objectName={this.state.modals.objectToDeleteName}
+                                display={this.state.displayDeleteShiftLinkModal}
+                                objectId={this.state.objectToDeleteId}
+                                objectName={this.state.objectToDeleteName}
                                 onDismiss={this.hideDeleteShiftLinkModal}
                                 onSuccess={this.deleteShiftLink}
                             />

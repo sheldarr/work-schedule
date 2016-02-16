@@ -64541,6 +64541,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _superagent = __webpack_require__(694);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
 	var _reactBootstrap = __webpack_require__(208);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -64549,52 +64553,92 @@
 	    displayName: 'Schedule',
 
 	    propTypes: {
-	        params: _react2.default.PropTypes.object,
-	        store: _react2.default.PropTypes.object.isRequired
+	        params: _react2.default.PropTypes.object
 	    },
 
+	    getInitialState: function getInitialState() {
+	        return {
+	            displayLinkShiftModal: false,
+	            displayDeleteShiftLinkModal: false,
+	            worker: {
+	                id: 0,
+	                name: '',
+	                schedule: []
+	            },
+	            objectToDeleteId: 0,
+	            objectToDeleteName: ''
+	        };
+	    },
 	    componentWillMount: function componentWillMount() {
+	        this.downloadWorkers();
+	        this.downloadShifts();
+	    },
+	    downloadWorkers: function downloadWorkers() {
 	        var _this = this;
 
-	        this.setState(this.props.store.getState());
+	        _superagent2.default.get('http://127.0.0.1:5000/worker').end(function (error, response) {
+	            if (error || !response.ok) {
+	                alert('Api Error');
+	            } else {
+	                _this.setState({
+	                    worker: response.body.workers.find(function (worker) {
+	                        return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10);
+	                    }.bind(_this))
+	                });
+	            }
+	        });
+	    },
+	    downloadShifts: function downloadShifts() {
+	        var _this2 = this;
 
-	        this.props.store.subscribe(function () {
-	            _this.setState(_this.props.store.getState());
+	        _superagent2.default.get('http://127.0.0.1:5000/shift').end(function (error, response) {
+	            if (error || !response.ok) {
+	                alert('Api Error');
+	            } else {
+	                _this2.setState({
+	                    shifts: response.body.shifts
+	                });
+	            }
 	        });
 	    },
 	    showLinkShiftModal: function showLinkShiftModal() {
-	        this.props.store.dispatch(actions.showLinkShiftModal());
+	        this.setState({ displayLinkShiftModal: true });
 	    },
 	    hideLinkShiftModal: function hideLinkShiftModal() {
-	        this.props.store.dispatch(actions.hideLinkShiftModal());
+	        this.setState({ displayLinkShiftModal: false });
 	    },
 	    showDeleteShiftLinkModal: function showDeleteShiftLinkModal(dayOfYear) {
-	        this.props.store.dispatch(actions.showDeleteShiftLinkModal(dayOfYear));
+	        this.setState({
+	            displayDeleteShiftLinkModal: true,
+	            objectToDeleteId: dayOfYear,
+	            objectToDeleteName: 'day ' + dayOfYear + ' shift'
+	        });
 	    },
 	    hideDeleteShiftLinkModal: function hideDeleteShiftLinkModal() {
-	        this.props.store.dispatch(actions.hideDeleteShiftLinkModal());
+	        this.setState({
+	            displayDeleteShiftLinkModal: true,
+	            objectToDeleteId: 0,
+	            objectToDeleteName: ''
+	        });
 	    },
 	    deleteShiftLink: function deleteShiftLink(dayOfYear) {
-	        this.props.store.dispatch(actions.hideDeleteShiftLinkModal());
+	        this.hideDeleteShiftLinkModal();
 	        this.props.store.dispatch(actions.deleteShiftLink(parseInt(this.props.params.workerId, 10), dayOfYear));
 	    },
-	    getWorker: function getWorker() {
-	        return this.state.workers.find(function (worker) {
-	            return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10);
-	        }.bind(this));
-	    },
-	    getShift: function getShift(shiftId) {
+	    getShiftName: function getShiftName(shiftId) {
+	        if (!this.state.shifts) {
+	            return '';
+	        }
+
 	        return this.state.shifts.find(function (shift) {
 	            return parseInt(shift.id, 10) === parseInt(shiftId, 10);
-	        });
+	        }).name;
 	    },
 	    goBack: function goBack() {
 	        location.href = '#/workers';
 	    },
 	    render: function render() {
-	        var _this2 = this;
-
-	        var worker = this.getWorker();
+	        var _this3 = this;
 
 	        return _react2.default.createElement(
 	            _reactBootstrap.Grid,
@@ -64644,7 +64688,7 @@
 	                            _react2.default.createElement(
 	                                'tbody',
 	                                null,
-	                                worker.schedule.map(function (shiftLink) {
+	                                this.state.worker.schedule.map(function (shiftLink) {
 	                                    return _react2.default.createElement(
 	                                        'tr',
 	                                        { key: shiftLink.dayOfYear + '_' + shiftLink.shiftId },
@@ -64661,7 +64705,7 @@
 	                                        _react2.default.createElement(
 	                                            'td',
 	                                            null,
-	                                            _this2.getShift(shiftLink.shiftId).name
+	                                            _this3.getShiftName(shiftLink.shiftId)
 	                                        ),
 	                                        _react2.default.createElement(
 	                                            'td',
@@ -64671,7 +64715,7 @@
 	                                                { className: 'pull-right' },
 	                                                _react2.default.createElement(
 	                                                    _reactBootstrap.Button,
-	                                                    { bsStyle: 'danger', onClick: _this2.showDeleteShiftLinkModal.bind(_this2, shiftLink.dayOfYear) },
+	                                                    { bsStyle: 'danger', onClick: _this3.showDeleteShiftLinkModal.bind(_this3, shiftLink.dayOfYear) },
 	                                                    _react2.default.createElement(
 	                                                        'span',
 	                                                        null,
@@ -64713,16 +64757,15 @@
 	                            )
 	                        ),
 	                        _react2.default.createElement(_linkShiftModal2.default, {
-	                            display: this.state.modals.displayLinkShiftModal,
+	                            display: this.state.displayLinkShiftModal,
 	                            onDismiss: this.hideLinkShiftModal,
 	                            onSuccess: this.hideLinkShiftModal,
-	                            store: this.props.store,
 	                            workerId: parseInt(this.props.params.workerId, 10)
 	                        }),
 	                        _react2.default.createElement(_deleteModal2.default, {
-	                            display: this.state.modals.displayDeleteShiftLinkModal,
-	                            objectId: this.state.modals.objectToDeleteId,
-	                            objectName: this.state.modals.objectToDeleteName,
+	                            display: this.state.displayDeleteShiftLinkModal,
+	                            objectId: this.state.objectToDeleteId,
+	                            objectName: this.state.objectToDeleteName,
 	                            onDismiss: this.hideDeleteShiftLinkModal,
 	                            onSuccess: this.deleteShiftLink
 	                        })
@@ -64758,6 +64801,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _superagent = __webpack_require__(694);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
 	var _reactBootstrap = __webpack_require__(208);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -64769,18 +64816,34 @@
 	        display: _react2.default.PropTypes.bool.isRequired,
 	        onDismiss: _react2.default.PropTypes.func.isRequired,
 	        onSuccess: _react2.default.PropTypes.func.isRequired,
-	        store: _react2.default.PropTypes.object.isRequired,
 	        workerId: _react2.default.PropTypes.number.isRequired
 	    },
 
 	    getInitialState: function getInitialState() {
 	        return Object.assign({}, this.initialState);
 	    },
+	    componentWillMount: function componentWillMount() {
+	        this.downloadShifts();
+	    },
+	    downloadShifts: function downloadShifts() {
+	        var _this = this;
+
+	        _superagent2.default.get('http://127.0.0.1:5000/shift').end(function (error, response) {
+	            if (error || !response.ok) {
+	                alert('Api Error');
+	            } else {
+	                _this.setState({
+	                    shifts: response.body.shifts
+	                });
+	            }
+	        });
+	    },
 
 
 	    initialState: {
 	        dayOfYear: (0, _moment2.default)().dayOfYear(),
 	        shiftId: 0,
+	        shifts: [],
 	        validate: false
 	    },
 
@@ -64789,12 +64852,20 @@
 	        this.props.onDismiss();
 	    },
 	    link: function link() {
-	        this.props.store.dispatch(actions.linkShift({
+	        var _this2 = this;
+
+	        _superagent2.default.post('http://127.0.0.1:5000/link').send({
 	            dayOfYear: this.state.dayOfYear,
 	            shiftId: this.state.shiftId,
 	            workerId: this.props.workerId
-	        }));
-	        this.props.onSuccess();
+	        }).end(function (error, response) {
+	            if (error || !response.ok) {
+	                _this2.props.onDismiss();
+	                alert('Api Error');
+	            } else {
+	                _this2.props.onSuccess();
+	            }
+	        });
 	    },
 	    handleDayOfYearChange: function handleDayOfYearChange(date) {
 	        this.setState({
@@ -64823,8 +64894,6 @@
 	        return this.validateShift();
 	    },
 	    render: function render() {
-	        var state = this.props.store.getState();
-
 	        return _react2.default.createElement(
 	            _reactBootstrap.Modal,
 	            { onHide: this.props.onDismiss, show: this.props.display },
@@ -64871,7 +64940,7 @@
 	                        { disabled: true, value: '0' },
 	                        '---Select Shift---'
 	                    ),
-	                    state.shifts.map(function (shift) {
+	                    this.state.shifts.map(function (shift) {
 	                        return _react2.default.createElement(
 	                            'option',
 	                            { key: shift.id, value: shift.id },
