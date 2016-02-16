@@ -1,16 +1,31 @@
+import actions from '../actions';
 import CreateWorkerModal from './createWorkerModal.jsx';
 import DeleteModal from './deleteModal.jsx';
 import React from 'react';
-import { Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
+import { Button, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
 
 const Workers = React.createClass({
     propTypes: {
         store: React.PropTypes.object.isRequired
     },
 
-    render () {
-        var state = this.props.store.getState();
+    componentWillMount () {
+        this.setState(this.props.store.getState());
 
+        this.props.store.subscribe(() => {
+            this.setState(this.props.store.getState());
+        });
+    },
+
+    showCreateWorkerModal () {
+        this.props.store.dispatch(actions.showCreateWorkerModal());
+    },
+
+    hideCreateWorkerModal () {
+        this.props.store.dispatch(actions.hideCreateWorkerModal());
+    },
+
+    render () {
         return (
             <Grid>
                 <Row>
@@ -25,7 +40,7 @@ const Workers = React.createClass({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {state.workers.map(worker => <tr key={worker.id}>
+                                    {this.state.workers.map(worker => <tr key={worker.id}>
                                         <td>
                                             {worker.id}
                                         </td>
@@ -33,12 +48,25 @@ const Workers = React.createClass({
                                             {worker.name}
                                         </td>
                                         <td>
-                                            <div className="pull-right"></div>
                                         </td>
                                     </tr>)}
                                 </tbody>
                             </Table>
-                            <CreateWorkerModal display/>
+                            <div className="pull-right" onClick={this.showCreateWorkerModal}>
+                                <Button bsStyle="success">
+                                    <span><Glyphicon glyph="plus"/> {'Create Worker'}</span>
+                                </Button>
+                            </div>
+                            <CreateWorkerModal
+                                display={this.state.modals.displayCreateWorkerModal}
+                                onDismiss={this.hideCreateWorkerModal}
+                                onSuccess={this.hideCreateWorkerModal}
+                            />
+                            <DeleteModal
+                                display={this.state.modals.displayDeleteWorkerModal}
+                                objectId={this.state.objectToDeleteId}
+                                objectName={this.state.objectToDeleteName}
+                            />
                         </Panel>
                     </Col>
                 </Row>

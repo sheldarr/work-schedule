@@ -9,10 +9,10 @@ const CreateShiftModal = React.createClass({
         onSuccess: React.PropTypes.func.isRequired
     },
 
-    renderModal () {
+    render () {
         return (
-            <Modal.Dialog>
-                <Modal.Header>
+            <Modal onHide={this.props.onDismiss} show={this.props.display}>
+                <Modal.Header closeButton>
                     <Modal.Title><Glyphicon glyph="refresh"/> {'Create Shift'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -30,15 +30,7 @@ const CreateShiftModal = React.createClass({
                     <Button bsStyle="success"><Glyphicon glyph="ok"/> {'Create'}</Button>
                     <Button bsStyle="danger"><Glyphicon glyph="remove"/> {'Cancel'}</Button>
                 </Modal.Footer>
-            </Modal.Dialog>
-        );
-    },
-
-    render () {
-        return (
-            this.props.display
-                ? this.renderModal()
-                : null
+            </Modal>
         );
     }
 });

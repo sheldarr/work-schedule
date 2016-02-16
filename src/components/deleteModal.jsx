@@ -10,10 +10,10 @@ const DeleteModal = React.createClass({
         onSuccess: React.PropTypes.func.isRequired
     },
 
-    renderModal () {
+    render () {
         return (
-            <Modal.Dialog>
-                <Modal.Header>
+            <Modal onHide={this.props.onDismiss} show={this.props.display}>
+                <Modal.Header closeButton>
                     <Modal.Title>{'Delete'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -21,17 +21,9 @@ const DeleteModal = React.createClass({
                 </Modal.Body>
                 <Modal.Footer>
                     <Button bsStyle="success"><Glyphicon glyph="ok"/> {'Yes'}</Button>
-                    <Button bsStyle="danger"><Glyphicon glyph="remove"/> {'No'}</Button>
+                    <Button bsStyle="danger" onClick={this.props.onDismiss}><Glyphicon glyph="remove"/> {'No'}</Button>
                 </Modal.Footer>
-            </Modal.Dialog>
-        );
-    },
-
-    render () {
-        return (
-            this.props.display
-                ? this.renderModal()
-                : null
+            </Modal>
         );
     }
 });

@@ -1,7 +1,8 @@
 const redux = require('redux');
-const workers = require('./workers');
+const modals = require('./modals');
 const shifts = require('./shifts');
+const workers = require('./workers');
 
 module.exports = redux.combineReducers({
-    workers, shifts
+    modals, shifts, workers
 });

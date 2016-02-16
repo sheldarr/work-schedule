@@ -9,10 +9,10 @@ const CreateWorkerModal = React.createClass({
         onSuccess: React.PropTypes.func.isRequired
     },
 
-    renderModal () {
+    render () {
         return (
-            <Modal.Dialog>
-                <Modal.Header>
+            <Modal onHide={this.props.onDismiss} show={this.props.display}>
+                <Modal.Header closeButton>
                     <Modal.Title><Glyphicon glyph="user"/> {'Create Worker'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -20,17 +20,9 @@ const CreateWorkerModal = React.createClass({
                 </Modal.Body>
                 <Modal.Footer>
                     <Button bsStyle="success"><Glyphicon glyph="ok"/> {'Create'}</Button>
-                    <Button bsStyle="danger"><Glyphicon glyph="remove"/> {'Cancel'}</Button>
+                    <Button bsStyle="danger" onClick={this.props.onDismiss}><Glyphicon glyph="remove"/> {'Cancel'}</Button>
                 </Modal.Footer>
-            </Modal.Dialog>
-        );
-    },
-
-    render () {
-        return (
-            this.props.display
-                ? this.renderModal()
-                : null
+            </Modal>
         );
     }
 });

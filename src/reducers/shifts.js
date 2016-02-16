@@ -1,4 +1,4 @@
-const ActionTypes = require('../constants/ActionTypes');
+import ActionTypes from '../constants/ActionTypes';
 
 const initialState = [];
 

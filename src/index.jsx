@@ -13,7 +13,7 @@ import store from './store';
 const CalendarWrapper = React.createClass({
     render: function () {
         return (
-            <Calendar store={store} />
+            <Calendar store={store}/>
         );
     }
 });
@@ -21,7 +21,7 @@ const CalendarWrapper = React.createClass({
 const WorkersWrapper = React.createClass({
     render: function () {
         return (
-            <Workers store={store} />
+            <Workers store={store}/>
         );
     }
 });
@@ -29,7 +29,7 @@ const WorkersWrapper = React.createClass({
 const ShiftsWrapper = React.createClass({
     render: function () {
         return (
-            <Shifts store={store} />
+            <Shifts store={store}/>
         );
     }
 });
