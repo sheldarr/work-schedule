@@ -48649,8 +48649,8 @@
 	            });
 
 	            events.push({
-	                end: (0, _moment2.default)().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.startHour).minute(shift.startMinute),
-	                start: (0, _moment2.default)().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.endHour).minute(shift.endMinute),
+	                end: (0, _moment2.default)().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.startHour).minute(shift.startMinute).toDate(),
+	                start: (0, _moment2.default)().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.endHour).minute(shift.endMinute).toDate(),
 	                title: shift.name
 	            });
 	        });

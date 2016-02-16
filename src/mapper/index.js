@@ -10,8 +10,8 @@ function mapper (workers, shifts) {
             });
 
             events.push({
-                end: moment().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.startHour).minute(shift.startMinute),
-                start: moment().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.endHour).minute(shift.endMinute),
+                end: moment().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.startHour).minute(shift.startMinute).toDate(),
+                start: moment().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.endHour).minute(shift.endMinute).toDate(),
                 title: shift.name
             });
         });
