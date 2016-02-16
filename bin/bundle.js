@@ -62210,10 +62210,10 @@
 	        });
 	    },
 	    showCreateShiftModal: function showCreateShiftModal() {
-	        this.setState({ displayCreateShiftModal: false });
+	        this.setState({ displayCreateShiftModal: true });
 	    },
 	    hideCreateShiftModal: function hideCreateShiftModal() {
-	        this.setState({ displayCreateShiftModal: true });
+	        this.setState({ displayCreateShiftModal: false });
 	    },
 	    showDeleteShiftModal: function showDeleteShiftModal(shiftId, shiftName) {
 	        this.setState({
@@ -62241,6 +62241,10 @@
 	                _this2.downloadShifts();
 	            }
 	        });
+	    },
+	    shiftSucessfullyCreated: function shiftSucessfullyCreated() {
+	        this.downloadShifts();
+	        this.hideCreateShiftModal();
 	    },
 	    render: function render() {
 	        var _this3 = this;
@@ -62363,7 +62367,7 @@
 	                        _react2.default.createElement(_createShiftModal2.default, {
 	                            display: this.state.displayCreateShiftModal,
 	                            onDismiss: this.hideCreateShiftModal,
-	                            onSuccess: this.hideCreateShiftModal
+	                            onSuccess: this.shiftSucessfullyCreated
 	                        }),
 	                        _react2.default.createElement(_deleteModal2.default, {
 	                            display: this.state.displayDeleteShiftModal,
@@ -62391,10 +62395,6 @@
 	    value: true
 	});
 
-	var _actions = __webpack_require__(650);
-
-	var _actions2 = _interopRequireDefault(_actions);
-
 	var _reactBootstrapDatetimepicker = __webpack_require__(656);
 
 	var _reactBootstrapDatetimepicker2 = _interopRequireDefault(_reactBootstrapDatetimepicker);
@@ -62407,6 +62407,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _superagent = __webpack_require__(694);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
 	var _reactBootstrap = __webpack_require__(208);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -62417,8 +62421,7 @@
 	    propTypes: {
 	        display: _react2.default.PropTypes.bool.isRequired,
 	        onDismiss: _react2.default.PropTypes.func.isRequired,
-	        onSuccess: _react2.default.PropTypes.func.isRequired,
-	        store: _react2.default.PropTypes.object.isRequired
+	        onSuccess: _react2.default.PropTypes.func.isRequired
 	    },
 
 	    getInitialState: function getInitialState() {
@@ -62438,14 +62441,22 @@
 	        this.props.onDismiss();
 	    },
 	    create: function create() {
-	        this.props.store.dispatch(_actions2.default.createShift({
+	        var _this = this;
+
+	        _superagent2.default.post('http://127.0.0.1:5000/shift').send({
 	            name: this.state.name,
 	            startHour: this.state.start.hour(),
 	            startMinute: this.state.start.minute(),
 	            endHour: this.state.end.hour(),
 	            endMinute: this.state.end.minute()
-	        }));
-	        this.props.onSuccess();
+	        }).end(function (error, response) {
+	            if (error || !response.ok) {
+	                _this.props.onDismiss();
+	                alert('Api Error');
+	            } else {
+	                _this.props.onSuccess();
+	            }
+	        });
 	    },
 	    handleNameChange: function handleNameChange(event) {
 	        this.setState({

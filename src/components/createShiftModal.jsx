@@ -1,15 +1,14 @@
-import actions from '../actions';
 import DateTimeField from 'react-bootstrap-datetimepicker';
 import moment from 'moment';
 import React from 'react';
+import request from 'superagent';
 import { Button, Glyphicon, Input, Modal } from 'react-bootstrap';
 
 const CreateShiftModal = React.createClass({
     propTypes: {
         display: React.PropTypes.bool.isRequired,
         onDismiss: React.PropTypes.func.isRequired,
-        onSuccess: React.PropTypes.func.isRequired,
-        store: React.PropTypes.object.isRequired
+        onSuccess: React.PropTypes.func.isRequired
     },
 
     getInitialState () {
@@ -29,14 +28,23 @@ const CreateShiftModal = React.createClass({
     },
 
     create () {
-        this.props.store.dispatch(actions.createShift({
-            name: this.state.name,
-            startHour: this.state.start.hour(),
-            startMinute: this.state.start.minute(),
-            endHour: this.state.end.hour(),
-            endMinute: this.state.end.minute()
-        }));
-        this.props.onSuccess();
+        request
+            .post('http://127.0.0.1:5000/shift')
+            .send({
+                name: this.state.name,
+                startHour: this.state.start.hour(),
+                startMinute: this.state.start.minute(),
+                endHour: this.state.end.hour(),
+                endMinute: this.state.end.minute()
+            })
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    this.props.onDismiss();
+                    alert('Api Error');
+                } else {
+                    this.props.onSuccess();
+                }
+            });
     },
 
     handleNameChange (event) {

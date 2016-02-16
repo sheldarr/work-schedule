@@ -36,11 +36,11 @@ const Shifts = React.createClass({
     },
 
     showCreateShiftModal () {
-        this.setState({ displayCreateShiftModal: false });
+        this.setState({ displayCreateShiftModal: true });
     },
 
     hideCreateShiftModal () {
-        this.setState({ displayCreateShiftModal: true });
+        this.setState({ displayCreateShiftModal: false });
     },
 
     showDeleteShiftModal (shiftId, shiftName) {
@@ -71,6 +71,11 @@ const Shifts = React.createClass({
                     this.downloadShifts();
                 }
             });
+    },
+
+    shiftSucessfullyCreated () {
+        this.downloadShifts();
+        this.hideCreateShiftModal();
     },
 
     render () {
@@ -121,7 +126,7 @@ const Shifts = React.createClass({
                             <CreateShiftModal
                                 display={this.state.displayCreateShiftModal}
                                 onDismiss={this.hideCreateShiftModal}
-                                onSuccess={this.hideCreateShiftModal}
+                                onSuccess={this.shiftSucessfullyCreated}
                             />
                             <DeleteModal
                                 display={this.state.displayDeleteShiftModal}
