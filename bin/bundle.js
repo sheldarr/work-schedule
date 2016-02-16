@@ -41150,6 +41150,10 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _superagent = __webpack_require__(694);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
 	var _reactBootstrap = __webpack_require__(208);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -41160,27 +41164,51 @@
 	    displayName: 'Calendar',
 
 	    propTypes: {
-	        params: _react2.default.PropTypes.object,
-	        store: _react2.default.PropTypes.object.isRequired
+	        params: _react2.default.PropTypes.object
 	    },
 
+	    getInitialState: function getInitialState() {
+	        return {
+	            shifts: [],
+	            workers: []
+	        };
+	    },
 	    componentWillMount: function componentWillMount() {
+	        this.downloadWorkers();
+	        this.downloadShifts();
+	    },
+	    downloadWorkers: function downloadWorkers() {
 	        var _this = this;
 
-	        this.setState(this.props.store.getState());
+	        _superagent2.default.get('http://127.0.0.1:5000/worker').end(function (error, response) {
+	            if (error || !response.ok) {
+	                alert('Api Error');
+	            } else {
+	                _this.setState({
+	                    workers: response.body.workers
+	                });
+	            }
+	        });
+	    },
+	    downloadShifts: function downloadShifts() {
+	        var _this2 = this;
 
-	        this.props.store.subscribe(function () {
-	            _this.setState(_this.props.store.getState());
+	        _superagent2.default.get('http://127.0.0.1:5000/shift').end(function (error, response) {
+	            if (error || !response.ok) {
+	                alert('Api Error');
+	            } else {
+	                _this2.setState({
+	                    shifts: response.body.shifts
+	                });
+	            }
 	        });
 	    },
 	    getWorker: function getWorker() {
-	        var state = this.props.store.getState();
-
 	        if (!this.props.params.workerId) {
 	            return undefined;
 	        }
 
-	        return state.workers.find(function (worker) {
+	        return this.state.workers.find(function (worker) {
 	            return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10);
 	        }.bind(this));
 	    },
@@ -41188,8 +41216,12 @@
 	        location.href = '#/workers';
 	    },
 	    render: function render() {
-	        var worker = this.getWorker();
-	        var events = worker ? _mapper2.default.mapWorker(worker, this.state.shifts) : _mapper2.default.mapWorkers(this.state.workers, this.state.shifts);
+	        var events = [];
+
+	        if (this.state.workers.length && this.state.shifts.length) {
+	            var worker = this.getWorker();
+	            events = worker ? _mapper2.default.mapWorker(worker, this.state.shifts) : _mapper2.default.mapWorkers(this.state.workers, this.state.shifts);
+	        }
 
 	        return _react2.default.createElement(
 	            _reactBootstrap.Grid,
