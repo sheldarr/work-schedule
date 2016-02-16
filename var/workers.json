@@ -20,4 +20,26 @@
         "dayOfYear": 50,
         "shiftId": 3
     }]
+}, {
+    "id": 2,
+    "name": "Bereghor",
+    "schedule": [{
+        "dayOfYear": 43,
+        "shiftId": 1
+    }, {
+        "dayOfYear": 44,
+        "shiftId": 2
+    }, {
+        "dayOfYear": 45,
+        "shiftId": 3
+    }, {
+        "dayOfYear": 46,
+        "shiftId": 1
+    }, {
+        "dayOfYear": 47,
+        "shiftId": 2
+    }, {
+        "dayOfYear": 48,
+        "shiftId": 3
+    }]
 }]

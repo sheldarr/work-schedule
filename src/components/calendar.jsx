@@ -9,12 +9,25 @@ BigCalendar.momentLocalizer(moment);
 
 const Calendar = React.createClass({
     propTypes: {
+        params: React.PropTypes.object,
         store: React.PropTypes.object.isRequired
+    },
+
+    getWorker () {
+        var state = this.props.store.getState();
+
+        if (!this.props.params.workerId) {
+            return undefined;
+        }
+
+        return state.workers.find(function (worker) { return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10); }.bind(this));
     },
 
     render () {
         var state = this.props.store.getState();
-        var events = mapper(state.workers, state.shifts);
+
+        var worker = this.getWorker();
+        var events = worker ? mapper.mapWorker(worker, state.shifts) : mapper.mapWorkers(state.workers, state.shifts);
 
         return (
             <Grid>

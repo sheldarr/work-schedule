@@ -85,8 +85,12 @@
 	var CalendarWrapper = _react2.default.createClass({
 	    displayName: 'CalendarWrapper',
 
+	    propTypes: {
+	        params: _react2.default.PropTypes.object
+	    },
+
 	    render: function render() {
-	        return _react2.default.createElement(_calendar2.default, { store: _store2.default });
+	        return _react2.default.createElement(_calendar2.default, { params: this.props.params, store: _store2.default });
 	    }
 	});
 
@@ -113,6 +117,7 @@
 	        _reactRouter.Route,
 	        { component: _application2.default, path: '/' },
 	        _react2.default.createElement(_reactRouter.IndexRoute, { component: CalendarWrapper }),
+	        _react2.default.createElement(_reactRouter.Route, { component: CalendarWrapper, path: '/:workerId' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: WorkersWrapper, path: '/workers' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: ShiftsWrapper, path: '/shifts' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: _notFound2.default, path: '*' })
@@ -41138,12 +41143,26 @@
 	    displayName: 'Calendar',
 
 	    propTypes: {
+	        params: _react2.default.PropTypes.object,
 	        store: _react2.default.PropTypes.object.isRequired
 	    },
 
+	    getWorker: function getWorker() {
+	        var state = this.props.store.getState();
+
+	        if (!this.props.params.workerId) {
+	            return undefined;
+	        }
+
+	        return state.workers.find(function (worker) {
+	            return parseInt(worker.id, 10) === parseInt(this.props.params.workerId, 10);
+	        }.bind(this));
+	    },
 	    render: function render() {
 	        var state = this.props.store.getState();
-	        var events = (0, _mapper2.default)(state.workers, state.shifts);
+
+	        var worker = this.getWorker();
+	        var events = worker ? _mapper2.default.mapWorker(worker, state.shifts) : _mapper2.default.mapWorkers(state.workers, state.shifts);
 
 	        return _react2.default.createElement(
 	            _reactBootstrap.Grid,
@@ -48639,10 +48658,10 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function mapper(workers, shifts) {
-	    var events = [];
+	var mapper = {
+	    mapWorker: function mapWorker(worker, shifts) {
+	        var events = [];
 
-	    workers.forEach(function (worker) {
 	        worker.schedule.forEach(function (entry) {
 	            var shift = shifts.find(function (shiftEntry) {
 	                return shiftEntry.id === entry.shiftId;
@@ -48654,9 +48673,28 @@
 	                title: shift.name
 	            });
 	        });
-	    });
 
-	    return events;
+	        return events;
+	    },
+	    mapWorkers: function mapWorkers(workers, shifts) {
+	        var events = [];
+
+	        workers.forEach(function (worker) {
+	            worker.schedule.forEach(function (entry) {
+	                var shift = shifts.find(function (shiftEntry) {
+	                    return shiftEntry.id === entry.shiftId;
+	                });
+
+	                events.push({
+	                    end: (0, _moment2.default)().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.startHour).minute(shift.startMinute).toDate(),
+	                    start: (0, _moment2.default)().dayOfYear(entry.dayOfYear).startOf('minute').hour(shift.endHour).minute(shift.endMinute).toDate(),
+	                    title: shift.name + ' - ' + worker.name
+	                });
+	            });
+	        });
+
+	        return events;
+	    }
 	};
 
 	exports.default = mapper;
@@ -65209,6 +65247,36 @@
 				},
 				{
 					"dayOfYear": 50,
+					"shiftId": 3
+				}
+			]
+		},
+		{
+			"id": 2,
+			"name": "Bereghor",
+			"schedule": [
+				{
+					"dayOfYear": 43,
+					"shiftId": 1
+				},
+				{
+					"dayOfYear": 44,
+					"shiftId": 2
+				},
+				{
+					"dayOfYear": 45,
+					"shiftId": 3
+				},
+				{
+					"dayOfYear": 46,
+					"shiftId": 1
+				},
+				{
+					"dayOfYear": 47,
+					"shiftId": 2
+				},
+				{
+					"dayOfYear": 48,
 					"shiftId": 3
 				}
 			]
