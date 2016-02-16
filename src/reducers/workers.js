@@ -4,7 +4,7 @@ const initialState = [];
 
 module.exports = (state = initialState, action) => {
     switch (action.type) {
-    case ActionTypes.ADD_WORKER:
+    case ActionTypes.CREATE_WORKER:
         return [action.worker, ...state];
     case ActionTypes.DELETE_WORKER:
         var index = state.indexOf(action.worker);

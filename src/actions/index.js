@@ -1,9 +1,9 @@
 const ActionTypes = require('../constants/ActionTypes');
 
 module.exports = {
-    addWorker (worker) {
+    createWorker (worker) {
         return {
-            type: ActionTypes.ADD_WORKER,
+            type: ActionTypes.CREATE_WORKER,
             worker
         };
     },

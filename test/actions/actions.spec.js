@@ -3,7 +3,7 @@ const ActionTypes = require('../../src/constants/ActionTypes');
 const expect = require('expect');
 
 describe('actions', () => {
-    it('addWorker should create ADD_WORKER action', () => {
+    it('addWorker should create CREATE_WORKER action', () => {
         var worker = {
             id: 1,
             name: 'Name',
@@ -13,11 +13,11 @@ describe('actions', () => {
             }]
         };
 
-        var action = actions.addWorker(worker);
+        var action = actions.createWorker(worker);
 
         expect(action).toEqual({
             worker,
-            type: ActionTypes.ADD_WORKER
+            type: ActionTypes.CREATE_WORKER
         });
     });
 

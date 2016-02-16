@@ -61660,9 +61660,9 @@
 	var ActionTypes = __webpack_require__(651);
 
 	module.exports = {
-	    addWorker: function addWorker(worker) {
+	    createWorker: function createWorker(worker) {
 	        return {
-	            type: ActionTypes.ADD_WORKER,
+	            type: ActionTypes.CREATE_WORKER,
 	            worker: worker
 	        };
 	    },
@@ -61691,7 +61691,7 @@
 	'use strict';
 
 	module.exports = {
-	    ADD_WORKER: 'ADD_WORKER',
+	    CREATE_WORKER: 'CREATE_WORKER',
 	    DELETE_WORKER: 'DELETE_WORKER',
 	    HIDE_CREATE_WORKER_MODAL: 'HIDE_CREATE_WORKER_MODAL',
 	    SHOW_CREATE_WORKER_MODAL: 'SHOW_CREATE_WORKER_MODAL'
@@ -64952,7 +64952,7 @@
 	    var action = arguments[1];
 
 	    switch (action.type) {
-	        case _ActionTypes2.default.ADD_WORKER:
+	        case _ActionTypes2.default.CREATE_WORKER:
 	            return [action.worker].concat(_toConsumableArray(state));
 	        case _ActionTypes2.default.DELETE_WORKER:
 	            var index = state.indexOf(action.worker);

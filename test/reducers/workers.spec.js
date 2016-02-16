@@ -9,7 +9,7 @@ describe('workers reducer', () => {
         expect(workersAfter).toEqual([]);
     });
 
-    it('should handle ADD_WORKER', () => {
+    it('should handle CREATE_WORKER', () => {
         var worker = {
             id: 1,
             name: 'Name',
@@ -22,7 +22,7 @@ describe('workers reducer', () => {
         var workersBefore = [];
         var workersAfter = workers(workersBefore, {
             worker: worker,
-            type: ActionTypes.ADD_WORKER
+            type: ActionTypes.CREATE_WORKER
         });
 
         expect(workersAfter).toInclude(worker);
