@@ -8,6 +8,13 @@ module.exports = {
         };
     },
 
+    createShift (shift) {
+        return {
+            type: ActionTypes.CREATE_SHIFT,
+            shift
+        };
+    },
+
     deleteWorker (worker) {
         return {
             type: ActionTypes.DELETE_WORKER,
@@ -24,6 +31,18 @@ module.exports = {
     showCreateWorkerModal () {
         return {
             type: ActionTypes.SHOW_CREATE_WORKER_MODAL
+        };
+    },
+
+    hideCreateShiftModal () {
+        return {
+            type: ActionTypes.HIDE_CREATE_SHIFT_MODAL
+        };
+    },
+
+    showCreateShiftModal () {
+        return {
+            type: ActionTypes.SHOW_CREATE_SHIFT_MODAL
         };
     }
 };

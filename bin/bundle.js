@@ -61667,6 +61667,12 @@
 	            worker: worker
 	        };
 	    },
+	    createShift: function createShift(shift) {
+	        return {
+	            type: ActionTypes.CREATE_SHIFT,
+	            shift: shift
+	        };
+	    },
 	    deleteWorker: function deleteWorker(worker) {
 	        return {
 	            type: ActionTypes.DELETE_WORKER,
@@ -61682,6 +61688,16 @@
 	        return {
 	            type: ActionTypes.SHOW_CREATE_WORKER_MODAL
 	        };
+	    },
+	    hideCreateShiftModal: function hideCreateShiftModal() {
+	        return {
+	            type: ActionTypes.HIDE_CREATE_SHIFT_MODAL
+	        };
+	    },
+	    showCreateShiftModal: function showCreateShiftModal() {
+	        return {
+	            type: ActionTypes.SHOW_CREATE_SHIFT_MODAL
+	        };
 	    }
 	};
 
@@ -61693,9 +61709,12 @@
 
 	module.exports = {
 	    CREATE_WORKER: 'CREATE_WORKER',
+	    CREATE_SHIFT: 'CREATE_SHIFT',
 	    DELETE_WORKER: 'DELETE_WORKER',
 	    HIDE_CREATE_WORKER_MODAL: 'HIDE_CREATE_WORKER_MODAL',
-	    SHOW_CREATE_WORKER_MODAL: 'SHOW_CREATE_WORKER_MODAL'
+	    SHOW_CREATE_WORKER_MODAL: 'SHOW_CREATE_WORKER_MODAL',
+	    HIDE_CREATE_SHIFT_MODAL: 'HIDE_CREATE_SHIFT_MODAL',
+	    SHOW_CREATE_SHIFT_MODAL: 'SHOW_CREATE_SHIFT_MODAL'
 	};
 
 /***/ },
@@ -61895,6 +61914,10 @@
 	    value: true
 	});
 
+	var _actions = __webpack_require__(650);
+
+	var _actions2 = _interopRequireDefault(_actions);
+
 	var _createShiftModal = __webpack_require__(655);
 
 	var _createShiftModal2 = _interopRequireDefault(_createShiftModal);
@@ -61922,9 +61945,22 @@
 	        store: _react2.default.PropTypes.object.isRequired
 	    },
 
-	    render: function render() {
-	        var state = this.props.store.getState();
+	    componentWillMount: function componentWillMount() {
+	        var _this = this;
 
+	        this.setState(this.props.store.getState());
+
+	        this.props.store.subscribe(function () {
+	            _this.setState(_this.props.store.getState());
+	        });
+	    },
+	    showCreateShiftModal: function showCreateShiftModal() {
+	        this.props.store.dispatch(_actions2.default.showCreateShiftModal());
+	    },
+	    hideCreateShiftModal: function hideCreateShiftModal() {
+	        this.props.store.dispatch(_actions2.default.hideCreateShiftModal());
+	    },
+	    render: function render() {
 	        return _react2.default.createElement(
 	            _reactBootstrap.Grid,
 	            null,
@@ -61978,7 +62014,7 @@
 	                            _react2.default.createElement(
 	                                'tbody',
 	                                null,
-	                                state.shifts.map(function (shift) {
+	                                this.state.shifts.map(function (shift) {
 	                                    return _react2.default.createElement(
 	                                        'tr',
 	                                        { key: shift.id },
@@ -62011,7 +62047,32 @@
 	                                })
 	                            )
 	                        ),
-	                        _react2.default.createElement(_createShiftModal2.default, { display: true })
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'pull-right', onClick: this.showCreateShiftModal },
+	                            _react2.default.createElement(
+	                                _reactBootstrap.Button,
+	                                { bsStyle: 'success' },
+	                                _react2.default.createElement(
+	                                    'span',
+	                                    null,
+	                                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'plus' }),
+	                                    ' ',
+	                                    'Create Shift'
+	                                )
+	                            )
+	                        ),
+	                        _react2.default.createElement(_createShiftModal2.default, {
+	                            display: this.state.modals.displayCreateShiftModal,
+	                            onDismiss: this.hideCreateShiftModal,
+	                            onSuccess: this.hideCreateShiftModal,
+	                            store: this.props.store
+	                        }),
+	                        _react2.default.createElement(_deleteModal2.default, {
+	                            display: this.state.modals.displayDeleteShiftModal,
+	                            objectId: this.state.objectToDeleteId,
+	                            objectName: this.state.objectToDeleteName
+	                        })
 	                    )
 	                )
 	            )
@@ -62031,9 +62092,17 @@
 	    value: true
 	});
 
+	var _actions = __webpack_require__(650);
+
+	var _actions2 = _interopRequireDefault(_actions);
+
 	var _reactBootstrapDatetimepicker = __webpack_require__(656);
 
 	var _reactBootstrapDatetimepicker2 = _interopRequireDefault(_reactBootstrapDatetimepicker);
+
+	var _moment = __webpack_require__(549);
+
+	var _moment2 = _interopRequireDefault(_moment);
 
 	var _react = __webpack_require__(1);
 
@@ -62049,9 +62118,68 @@
 	    propTypes: {
 	        display: _react2.default.PropTypes.bool.isRequired,
 	        onDismiss: _react2.default.PropTypes.func.isRequired,
-	        onSuccess: _react2.default.PropTypes.func.isRequired
+	        onSuccess: _react2.default.PropTypes.func.isRequired,
+	        store: _react2.default.PropTypes.object.isRequired
 	    },
 
+	    getInitialState: function getInitialState() {
+	        return Object.assign({}, this.initialState);
+	    },
+
+
+	    initialState: {
+	        name: '',
+	        start: (0, _moment2.default)(),
+	        end: (0, _moment2.default)(),
+	        validate: false
+	    },
+
+	    dismiss: function dismiss() {
+	        this.setState(Object.assign({}, this.initialState));
+	        this.props.onDismiss();
+	    },
+	    create: function create() {
+	        this.props.store.dispatch(_actions2.default.createShift({
+	            name: this.state.name,
+	            startHour: this.state.start.hour(),
+	            startMinute: this.state.start.minute(),
+	            endHour: this.state.end.hour(),
+	            endMinute: this.state.end.minute()
+	        }));
+	        this.props.onSuccess();
+	    },
+	    handleNameChange: function handleNameChange(event) {
+	        this.setState({
+	            name: event.target.value,
+	            validate: true
+	        });
+	    },
+	    handleStartChange: function handleStartChange(start) {
+	        this.setState({
+	            start: (0, _moment2.default)(parseInt(start, 10)),
+	            validate: true
+	        });
+	    },
+	    handleEndChange: function handleEndChange(end) {
+	        this.setState({
+	            end: (0, _moment2.default)(parseInt(end, 10)),
+	            validate: true
+	        });
+	    },
+	    validateName: function validateName() {
+	        if (!this.state.validate) {
+	            return null;
+	        }
+
+	        if (this.state.name === '') {
+	            return 'error';
+	        }
+
+	        return 'success';
+	    },
+	    validateShift: function validateShift() {
+	        return this.validateName();
+	    },
 	    render: function render() {
 	        return _react2.default.createElement(
 	            _reactBootstrap.Modal,
@@ -62070,10 +62198,16 @@
 	            _react2.default.createElement(
 	                _reactBootstrap.Modal.Body,
 	                null,
-	                _react2.default.createElement(_reactBootstrap.Input, { label: 'Name', placeholder: 'Name', type: 'text' }),
+	                _react2.default.createElement(_reactBootstrap.Input, {
+	                    bsStyle: this.validateName(),
+	                    label: 'Name',
+	                    onChange: this.handleNameChange,
+	                    placeholder: 'Name',
+	                    type: 'text'
+	                }),
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'form-group' },
+	                    { className: 'form-group has-success' },
 	                    _react2.default.createElement(
 	                        'label',
 	                        { className: 'control-label' },
@@ -62083,11 +62217,11 @@
 	                            'Start'
 	                        )
 	                    ),
-	                    _react2.default.createElement(_reactBootstrapDatetimepicker2.default, { mode: 'time' })
+	                    _react2.default.createElement(_reactBootstrapDatetimepicker2.default, { inputProps: { disabled: true }, mode: 'time', onChange: this.handleStartChange })
 	                ),
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'form-group' },
+	                    { className: 'form-group has-success' },
 	                    _react2.default.createElement(
 	                        'label',
 	                        { className: 'control-label' },
@@ -62097,7 +62231,7 @@
 	                            'End'
 	                        )
 	                    ),
-	                    _react2.default.createElement(_reactBootstrapDatetimepicker2.default, { mode: 'time' })
+	                    _react2.default.createElement(_reactBootstrapDatetimepicker2.default, { inputProps: { disabled: true }, mode: 'time', onChange: this.handleEndChange })
 	                )
 	            ),
 	            _react2.default.createElement(
@@ -62105,14 +62239,14 @@
 	                null,
 	                _react2.default.createElement(
 	                    _reactBootstrap.Button,
-	                    { bsStyle: 'success' },
+	                    { bsStyle: 'success', disabled: !this.validateShift(), onClick: this.create },
 	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'ok' }),
 	                    ' ',
 	                    'Create'
 	                ),
 	                _react2.default.createElement(
 	                    _reactBootstrap.Button,
-	                    { bsStyle: 'danger' },
+	                    { bsStyle: 'danger', onClick: this.dismiss },
 	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'remove' }),
 	                    ' ',
 	                    'Cancel'
@@ -64937,7 +65071,9 @@
 
 	var initialState = {
 	    displayCreateWorkerModal: false,
-	    displayDeleteWorkerModal: false
+	    displayCreateShiftModal: false,
+	    displayDeleteWorkerModal: false,
+	    displayDeleteShiftModal: false
 	};
 
 	module.exports = function () {
@@ -64949,6 +65085,10 @@
 	            return Object.assign({}, state, { displayCreateWorkerModal: false });
 	        case _ActionTypes2.default.SHOW_CREATE_WORKER_MODAL:
 	            return Object.assign({}, state, { displayCreateWorkerModal: true });
+	        case _ActionTypes2.default.HIDE_CREATE_SHIFT_MODAL:
+	            return Object.assign({}, state, { displayCreateShiftModal: false });
+	        case _ActionTypes2.default.SHOW_CREATE_SHIFT_MODAL:
+	            return Object.assign({}, state, { displayCreateShiftModal: true });
 	        default:
 	            return state;
 	    }
@@ -64966,13 +65106,26 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 	var initialState = [];
 
 	module.exports = function () {
+	    var _Math;
+
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
 	    var action = arguments[1];
 
 	    switch (action.type) {
+	        case _ActionTypes2.default.CREATE_SHIFT:
+	            var ids = state.map(function (shift) {
+	                return shift.id;
+	            });
+	            Object.assign(action.shift, {
+	                id: state.length ? (_Math = Math).max.apply(_Math, _toConsumableArray(ids)) + 1 : 1
+	            });
+	            return [action.shift].concat(_toConsumableArray(state));
+
 	        default:
 	            return state;
 	    }

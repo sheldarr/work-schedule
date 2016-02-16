@@ -1,18 +1,33 @@
+import actions from '../actions';
 import CreateShiftModal from './createShiftModal.jsx';
 import DeleteModal from './deleteModal.jsx';
 import moment from 'moment';
 import React from 'react';
 
-import { Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
+import { Button, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
 
 const Shifts = React.createClass({
     propTypes: {
         store: React.PropTypes.object.isRequired
     },
 
-    render () {
-        var state = this.props.store.getState();
+    componentWillMount () {
+        this.setState(this.props.store.getState());
 
+        this.props.store.subscribe(() => {
+            this.setState(this.props.store.getState());
+        });
+    },
+
+    showCreateShiftModal () {
+        this.props.store.dispatch(actions.showCreateShiftModal());
+    },
+
+    hideCreateShiftModal () {
+        this.props.store.dispatch(actions.hideCreateShiftModal());
+    },
+
+    render () {
         return (
             <Grid>
                 <Row>
@@ -29,7 +44,7 @@ const Shifts = React.createClass({
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {state.shifts.map(shift => <tr key={shift.id}>
+                                    {this.state.shifts.map(shift => <tr key={shift.id}>
                                         <td>
                                             {shift.id}
                                         </td>
@@ -48,7 +63,22 @@ const Shifts = React.createClass({
                                     </tr>)}
                                 </tbody>
                             </Table>
-                            <CreateShiftModal display/>
+                            <div className="pull-right" onClick={this.showCreateShiftModal}>
+                                <Button bsStyle="success">
+                                    <span><Glyphicon glyph="plus"/> {'Create Shift'}</span>
+                                </Button>
+                            </div>
+                            <CreateShiftModal
+                                display={this.state.modals.displayCreateShiftModal}
+                                onDismiss={this.hideCreateShiftModal}
+                                onSuccess={this.hideCreateShiftModal}
+                                store={this.props.store}
+                            />
+                            <DeleteModal
+                                display={this.state.modals.displayDeleteShiftModal}
+                                objectId={this.state.objectToDeleteId}
+                                objectName={this.state.objectToDeleteName}
+                            />
                         </Panel>
                     </Col>
                 </Row>

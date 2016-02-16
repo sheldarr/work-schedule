@@ -2,7 +2,9 @@ import ActionTypes from '../constants/ActionTypes';
 
 const initialState = {
     displayCreateWorkerModal: false,
-    displayDeleteWorkerModal: false
+    displayCreateShiftModal: false,
+    displayDeleteWorkerModal: false,
+    displayDeleteShiftModal: false
 };
 
 module.exports = (state = initialState, action) => {
@@ -11,6 +13,10 @@ module.exports = (state = initialState, action) => {
         return Object.assign({}, state, {displayCreateWorkerModal: false});
     case ActionTypes.SHOW_CREATE_WORKER_MODAL:
         return Object.assign({}, state, {displayCreateWorkerModal: true});
+    case ActionTypes.HIDE_CREATE_SHIFT_MODAL:
+        return Object.assign({}, state, {displayCreateShiftModal: false});
+    case ActionTypes.SHOW_CREATE_SHIFT_MODAL:
+        return Object.assign({}, state, {displayCreateShiftModal: true});
     default:
         return state;
     }
