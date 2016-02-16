@@ -1,4 +1,3 @@
-import actions from '../actions';
 import LinkShiftModal from './linkShiftModal.jsx';
 import DeleteModal from './deleteModal.jsx';
 import moment from 'moment';

@@ -61557,15 +61557,31 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _reactBootstrap = __webpack_require__(208);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var NotFound = _react2.default.createClass({
 	    displayName: 'NotFound',
 	    render: function render() {
 	        return _react2.default.createElement(
-	            'div',
+	            _reactBootstrap.Grid,
 	            null,
-	            'Not found'
+	            _react2.default.createElement(
+	                _reactBootstrap.Row,
+	                null,
+	                _react2.default.createElement(
+	                    _reactBootstrap.Col,
+	                    null,
+	                    _react2.default.createElement(_reactBootstrap.Panel, { header: _react2.default.createElement(
+	                            'span',
+	                            null,
+	                            _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'question-sign' }),
+	                            ' ',
+	                            'Page Not Found'
+	                        ) })
+	                )
+	            )
 	        );
 	    }
 	});
@@ -61814,139 +61830,8 @@
 	exports.default = Workers;
 
 /***/ },
-/* 650 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var ActionTypes = __webpack_require__(651);
-
-	module.exports = {
-	    createWorker: function createWorker(worker) {
-	        return {
-	            type: ActionTypes.CREATE_WORKER,
-	            worker: worker
-	        };
-	    },
-	    createShift: function createShift(shift) {
-	        return {
-	            type: ActionTypes.CREATE_SHIFT,
-	            shift: shift
-	        };
-	    },
-	    deleteShift: function deleteShift(shiftId) {
-	        return {
-	            type: ActionTypes.DELETE_SHIFT,
-	            shiftId: shiftId
-	        };
-	    },
-	    deleteWorker: function deleteWorker(workerId) {
-	        return {
-	            type: ActionTypes.DELETE_WORKER,
-	            workerId: workerId
-	        };
-	    },
-	    hideCreateWorkerModal: function hideCreateWorkerModal() {
-	        return {
-	            type: ActionTypes.HIDE_CREATE_WORKER_MODAL
-	        };
-	    },
-	    showCreateWorkerModal: function showCreateWorkerModal() {
-	        return {
-	            type: ActionTypes.SHOW_CREATE_WORKER_MODAL
-	        };
-	    },
-	    hideCreateShiftModal: function hideCreateShiftModal() {
-	        return {
-	            type: ActionTypes.HIDE_CREATE_SHIFT_MODAL
-	        };
-	    },
-	    showCreateShiftModal: function showCreateShiftModal() {
-	        return {
-	            type: ActionTypes.SHOW_CREATE_SHIFT_MODAL
-	        };
-	    },
-	    hideDeleteWorkerModal: function hideDeleteWorkerModal() {
-	        return {
-	            type: ActionTypes.HIDE_DELETE_WORKER_MODAL
-	        };
-	    },
-	    showDeleteWorkerModal: function showDeleteWorkerModal(objectId, objectName) {
-	        return {
-	            objectId: objectId,
-	            objectName: objectName,
-	            type: ActionTypes.SHOW_DELETE_WORKER_MODAL
-	        };
-	    },
-	    hideDeleteShiftModal: function hideDeleteShiftModal() {
-	        return {
-	            type: ActionTypes.HIDE_DELETE_SHIFT_MODAL
-	        };
-	    },
-	    showDeleteShiftModal: function showDeleteShiftModal(objectId, objectName) {
-	        return {
-	            objectId: objectId,
-	            objectName: objectName,
-	            type: ActionTypes.SHOW_DELETE_SHIFT_MODAL
-	        };
-	    },
-	    hideLinkShiftModal: function hideLinkShiftModal() {
-	        return {
-	            type: ActionTypes.HIDE_LINK_SHIFT_MODAL
-	        };
-	    },
-	    showLinkShiftModal: function showLinkShiftModal() {
-	        return {
-	            type: ActionTypes.SHOW_LINK_SHIFT_MODAL
-	        };
-	    },
-	    hideDeleteShiftLinkModal: function hideDeleteShiftLinkModal() {
-	        return {
-	            type: ActionTypes.HIDE_DELETE_SHIFT_LINK_MODAL
-	        };
-	    },
-	    showDeleteShiftLinkModal: function showDeleteShiftLinkModal(dayOfYear) {
-	        return {
-	            dayOfYear: dayOfYear,
-	            type: ActionTypes.SHOW_DELETE_SHIFT_LINK_MODAL
-	        };
-	    },
-	    deleteShiftLink: function deleteShiftLink(workerId, dayOfYear) {
-	        return {
-	            dayOfYear: dayOfYear,
-	            type: ActionTypes.DELETE_SHIFT_LINK,
-	            workerId: workerId
-	        };
-	    }
-	};
-
-/***/ },
-/* 651 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	module.exports = {
-	    CREATE_WORKER: 'CREATE_WORKER',
-	    CREATE_SHIFT: 'CREATE_SHIFT',
-	    DELETE_WORKER: 'DELETE_WORKER',
-	    DELETE_SHIFT: 'DELETE_SHIFT',
-	    HIDE_CREATE_WORKER_MODAL: 'HIDE_CREATE_WORKER_MODAL',
-	    SHOW_CREATE_WORKER_MODAL: 'SHOW_CREATE_WORKER_MODAL',
-	    HIDE_CREATE_SHIFT_MODAL: 'HIDE_CREATE_SHIFT_MODAL',
-	    SHOW_CREATE_SHIFT_MODAL: 'SHOW_CREATE_SHIFT_MODAL',
-	    SHOW_DELETE_WORKER_MODAL: 'SHOW_DELETE_WORKER_MODAL',
-	    HIDE_DELETE_WORKER_MODAL: 'HIDE_DELETE_WORKER_MODAL',
-	    SHOW_DELETE_SHIFT_MODAL: 'SHOW_DELETE_SHIFT_MODAL',
-	    HIDE_DELETE_SHIFT_MODAL: 'HIDE_DELETE_SHIFT_MODAL',
-	    HIDE_LINK_SHIFT_MODAL: 'HIDE_LINK_SHIFT_MODAL',
-	    SHOW_LINK_SHIFT_MODAL: 'SHOW_LINK_SHIFT_MODAL',
-	    HIDE_DELETE_SHIFT_LINK_MODAL: 'HIDE_DELETE_SHIFT_LINK_MODAL',
-	    SHOW_DELETE_SHIFT_LINK_MODAL: 'SHOW_DELETE_SHIFT_LINK_MODAL',
-	    DELETE_SHIFT_LINK: 'DELETE_SHIFT_LINK'
-	};
-
-/***/ },
+/* 650 */,
+/* 651 */,
 /* 652 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -64640,10 +64525,6 @@
 	    value: true
 	});
 
-	var _actions = __webpack_require__(650);
-
-	var _actions2 = _interopRequireDefault(_actions);
-
 	var _linkShiftModal = __webpack_require__(693);
 
 	var _linkShiftModal2 = _interopRequireDefault(_linkShiftModal);
@@ -64682,20 +64563,20 @@
 	        });
 	    },
 	    showLinkShiftModal: function showLinkShiftModal() {
-	        this.props.store.dispatch(_actions2.default.showLinkShiftModal());
+	        this.props.store.dispatch(actions.showLinkShiftModal());
 	    },
 	    hideLinkShiftModal: function hideLinkShiftModal() {
-	        this.props.store.dispatch(_actions2.default.hideLinkShiftModal());
+	        this.props.store.dispatch(actions.hideLinkShiftModal());
 	    },
 	    showDeleteShiftLinkModal: function showDeleteShiftLinkModal(dayOfYear) {
-	        this.props.store.dispatch(_actions2.default.showDeleteShiftLinkModal(dayOfYear));
+	        this.props.store.dispatch(actions.showDeleteShiftLinkModal(dayOfYear));
 	    },
 	    hideDeleteShiftLinkModal: function hideDeleteShiftLinkModal() {
-	        this.props.store.dispatch(_actions2.default.hideDeleteShiftLinkModal());
+	        this.props.store.dispatch(actions.hideDeleteShiftLinkModal());
 	    },
 	    deleteShiftLink: function deleteShiftLink(dayOfYear) {
-	        this.props.store.dispatch(_actions2.default.hideDeleteShiftLinkModal());
-	        this.props.store.dispatch(_actions2.default.deleteShiftLink(parseInt(this.props.params.workerId, 10), dayOfYear));
+	        this.props.store.dispatch(actions.hideDeleteShiftLinkModal());
+	        this.props.store.dispatch(actions.deleteShiftLink(parseInt(this.props.params.workerId, 10), dayOfYear));
 	    },
 	    getWorker: function getWorker() {
 	        return this.state.workers.find(function (worker) {
@@ -64865,10 +64746,6 @@
 	    value: true
 	});
 
-	var _actions = __webpack_require__(650);
-
-	var _actions2 = _interopRequireDefault(_actions);
-
 	var _reactBootstrapDatetimepicker = __webpack_require__(656);
 
 	var _reactBootstrapDatetimepicker2 = _interopRequireDefault(_reactBootstrapDatetimepicker);
@@ -64912,7 +64789,7 @@
 	        this.props.onDismiss();
 	    },
 	    link: function link() {
-	        this.props.store.dispatch(_actions2.default.linkShift({
+	        this.props.store.dispatch(actions.linkShift({
 	            dayOfYear: this.state.dayOfYear,
 	            shiftId: this.state.shiftId,
 	            workerId: this.props.workerId
