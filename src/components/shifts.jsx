@@ -1,43 +1,76 @@
-import actions from '../actions';
 import CreateShiftModal from './createShiftModal.jsx';
 import DeleteModal from './deleteModal.jsx';
 import moment from 'moment';
 import React from 'react';
+import request from 'superagent';
 
 import { Button, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
 
 const Shifts = React.createClass({
-    propTypes: {
-        store: React.PropTypes.object.isRequired
+    getInitialState () {
+        return {
+            displayCreateShiftModal: false,
+            displayDeleteShiftModal: false,
+            shifts: [],
+            objectToDeleteId: 0,
+            objectToDeleteName: ''
+        };
     },
 
     componentWillMount () {
-        this.setState(this.props.store.getState());
+        this.downloadShifts();
+    },
 
-        this.props.store.subscribe(() => {
-            this.setState(this.props.store.getState());
-        });
+    downloadShifts () {
+        request
+            .get('http://127.0.0.1:5000/shift')
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    alert('Api Error');
+                } else {
+                    this.setState({
+                        shifts: response.body.shifts
+                    });
+                }
+            });
     },
 
     showCreateShiftModal () {
-        this.props.store.dispatch(actions.showCreateShiftModal());
+        this.setState({ displayCreateShiftModal: false });
     },
 
     hideCreateShiftModal () {
-        this.props.store.dispatch(actions.hideCreateShiftModal());
-    },
-
-    hideDeleteShiftModal () {
-        this.props.store.dispatch(actions.hideDeleteShiftModal());
+        this.setState({ displayCreateShiftModal: true });
     },
 
     showDeleteShiftModal (shiftId, shiftName) {
-        this.props.store.dispatch(actions.showDeleteShiftModal(shiftId, shiftName));
+        this.setState({
+            displayDeleteShiftModal: true,
+            objectToDeleteId: shiftId,
+            objectToDeleteName: shiftName
+        });
+    },
+
+    hideDeleteShiftModal () {
+        this.setState({
+            displayDeleteShiftModal: false,
+            objectToDeleteId: 0,
+            objectToDeleteName: ''
+        });
     },
 
     deleteShift (shiftId) {
-        this.props.store.dispatch(actions.hideDeleteShiftModal());
-        this.props.store.dispatch(actions.deleteShift(shiftId));
+        this.hideDeleteShiftModal();
+
+        request
+            .del(`http://127.0.0.1:5000/shift/${shiftId}`)
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    alert('Api Error');
+                } else {
+                    this.downloadShifts();
+                }
+            });
     },
 
     render () {
@@ -86,15 +119,14 @@ const Shifts = React.createClass({
                                 </Button>
                             </div>
                             <CreateShiftModal
-                                display={this.state.modals.displayCreateShiftModal}
+                                display={this.state.displayCreateShiftModal}
                                 onDismiss={this.hideCreateShiftModal}
                                 onSuccess={this.hideCreateShiftModal}
-                                store={this.props.store}
                             />
                             <DeleteModal
-                                display={this.state.modals.displayDeleteShiftModal}
-                                objectId={this.state.modals.objectToDeleteId}
-                                objectName={this.state.modals.objectToDeleteName}
+                                display={this.state.displayDeleteShiftModal}
+                                objectId={this.state.objectToDeleteId}
+                                objectName={this.state.objectToDeleteName}
                                 onDismiss={this.hideDeleteShiftModal}
                                 onSuccess={this.deleteShift}
                             />

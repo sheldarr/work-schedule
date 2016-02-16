@@ -62158,10 +62158,6 @@
 	    value: true
 	});
 
-	var _actions = __webpack_require__(650);
-
-	var _actions2 = _interopRequireDefault(_actions);
-
 	var _createShiftModal = __webpack_require__(655);
 
 	var _createShiftModal2 = _interopRequireDefault(_createShiftModal);
@@ -62178,44 +62174,76 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
+	var _superagent = __webpack_require__(694);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
 	var _reactBootstrap = __webpack_require__(208);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Shifts = _react2.default.createClass({
 	    displayName: 'Shifts',
-
-	    propTypes: {
-	        store: _react2.default.PropTypes.object.isRequired
+	    getInitialState: function getInitialState() {
+	        return {
+	            displayCreateShiftModal: false,
+	            displayDeleteShiftModal: false,
+	            shifts: [],
+	            objectToDeleteId: 0,
+	            objectToDeleteName: ''
+	        };
 	    },
-
 	    componentWillMount: function componentWillMount() {
+	        this.downloadShifts();
+	    },
+	    downloadShifts: function downloadShifts() {
 	        var _this = this;
 
-	        this.setState(this.props.store.getState());
-
-	        this.props.store.subscribe(function () {
-	            _this.setState(_this.props.store.getState());
+	        _superagent2.default.get('http://127.0.0.1:5000/shift').end(function (error, response) {
+	            if (error || !response.ok) {
+	                alert('Api Error');
+	            } else {
+	                _this.setState({
+	                    shifts: response.body.shifts
+	                });
+	            }
 	        });
 	    },
 	    showCreateShiftModal: function showCreateShiftModal() {
-	        this.props.store.dispatch(_actions2.default.showCreateShiftModal());
+	        this.setState({ displayCreateShiftModal: false });
 	    },
 	    hideCreateShiftModal: function hideCreateShiftModal() {
-	        this.props.store.dispatch(_actions2.default.hideCreateShiftModal());
-	    },
-	    hideDeleteShiftModal: function hideDeleteShiftModal() {
-	        this.props.store.dispatch(_actions2.default.hideDeleteShiftModal());
+	        this.setState({ displayCreateShiftModal: true });
 	    },
 	    showDeleteShiftModal: function showDeleteShiftModal(shiftId, shiftName) {
-	        this.props.store.dispatch(_actions2.default.showDeleteShiftModal(shiftId, shiftName));
+	        this.setState({
+	            displayDeleteShiftModal: true,
+	            objectToDeleteId: shiftId,
+	            objectToDeleteName: shiftName
+	        });
+	    },
+	    hideDeleteShiftModal: function hideDeleteShiftModal() {
+	        this.setState({
+	            displayDeleteShiftModal: false,
+	            objectToDeleteId: 0,
+	            objectToDeleteName: ''
+	        });
 	    },
 	    deleteShift: function deleteShift(shiftId) {
-	        this.props.store.dispatch(_actions2.default.hideDeleteShiftModal());
-	        this.props.store.dispatch(_actions2.default.deleteShift(shiftId));
+	        var _this2 = this;
+
+	        this.hideDeleteShiftModal();
+
+	        _superagent2.default.del('http://127.0.0.1:5000/shift/' + shiftId).end(function (error, response) {
+	            if (error || !response.ok) {
+	                alert('Api Error');
+	            } else {
+	                _this2.downloadShifts();
+	            }
+	        });
 	    },
 	    render: function render() {
-	        var _this2 = this;
+	        var _this3 = this;
 
 	        return _react2.default.createElement(
 	            _reactBootstrap.Grid,
@@ -62302,7 +62330,7 @@
 	                                                { className: 'pull-right' },
 	                                                _react2.default.createElement(
 	                                                    _reactBootstrap.Button,
-	                                                    { bsStyle: 'danger', onClick: _this2.showDeleteShiftModal.bind(_this2, shift.id, shift.name) },
+	                                                    { bsStyle: 'danger', onClick: _this3.showDeleteShiftModal.bind(_this3, shift.id, shift.name) },
 	                                                    _react2.default.createElement(
 	                                                        'span',
 	                                                        null,
@@ -62333,15 +62361,14 @@
 	                            )
 	                        ),
 	                        _react2.default.createElement(_createShiftModal2.default, {
-	                            display: this.state.modals.displayCreateShiftModal,
+	                            display: this.state.displayCreateShiftModal,
 	                            onDismiss: this.hideCreateShiftModal,
-	                            onSuccess: this.hideCreateShiftModal,
-	                            store: this.props.store
+	                            onSuccess: this.hideCreateShiftModal
 	                        }),
 	                        _react2.default.createElement(_deleteModal2.default, {
-	                            display: this.state.modals.displayDeleteShiftModal,
-	                            objectId: this.state.modals.objectToDeleteId,
-	                            objectName: this.state.modals.objectToDeleteName,
+	                            display: this.state.displayDeleteShiftModal,
+	                            objectId: this.state.objectToDeleteId,
+	                            objectName: this.state.objectToDeleteName,
 	                            onDismiss: this.hideDeleteShiftModal,
 	                            onSuccess: this.deleteShift
 	                        })
