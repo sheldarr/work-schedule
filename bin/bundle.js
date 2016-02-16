@@ -117,7 +117,7 @@
 	        _reactRouter.Route,
 	        { component: _application2.default, path: '/' },
 	        _react2.default.createElement(_reactRouter.IndexRoute, { component: CalendarWrapper }),
-	        _react2.default.createElement(_reactRouter.Route, { component: CalendarWrapper, path: '/:workerId' }),
+	        _react2.default.createElement(_reactRouter.Route, { component: CalendarWrapper, path: '/calendar/:workerId' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: WorkersWrapper, path: '/workers' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: ShiftsWrapper, path: '/shifts' }),
 	        _react2.default.createElement(_reactRouter.Route, { component: _notFound2.default, path: '*' })

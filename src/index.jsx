@@ -42,7 +42,7 @@ ReactDOM.render(
     <Router>
         <Route component={Application} path="/">
             <IndexRoute component={CalendarWrapper}/>
-            <Route component={CalendarWrapper} path="/:workerId"/>
+            <Route component={CalendarWrapper} path="/calendar/:workerId"/>
             <Route component={WorkersWrapper} path="/workers"/>
             <Route component={ShiftsWrapper} path="/shifts"/>
             <Route component={NotFound} path="*"/>
