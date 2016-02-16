@@ -61,6 +61,7 @@ const Workers = React.createClass({
                                 display={this.state.modals.displayCreateWorkerModal}
                                 onDismiss={this.hideCreateWorkerModal}
                                 onSuccess={this.hideCreateWorkerModal}
+                                store={this.props.store}
                             />
                             <DeleteModal
                                 display={this.state.modals.displayDeleteWorkerModal}

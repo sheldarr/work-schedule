@@ -11,7 +11,6 @@ describe('workers reducer', () => {
 
     it('should handle CREATE_WORKER', () => {
         var worker = {
-            id: 1,
             name: 'Name',
             schedule: [{
                 dayOfYear: 1,
@@ -21,11 +20,12 @@ describe('workers reducer', () => {
 
         var workersBefore = [];
         var workersAfter = workers(workersBefore, {
-            worker: worker,
+            worker,
             type: ActionTypes.CREATE_WORKER
         });
 
         expect(workersAfter).toInclude(worker);
+        expect(workersAfter[0].id).toEqual(1);
     });
 
     it('should handle DELETE_WORKER', () => {

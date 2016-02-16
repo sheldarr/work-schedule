@@ -1,3 +1,4 @@
+import actions from '../actions';
 import React from 'react';
 
 import { Button, Glyphicon, Input, Modal } from 'react-bootstrap';
@@ -6,11 +7,17 @@ const CreateWorkerModal = React.createClass({
     propTypes: {
         display: React.PropTypes.bool.isRequired,
         onDismiss: React.PropTypes.func.isRequired,
-        onSuccess: React.PropTypes.func.isRequired
+        onSuccess: React.PropTypes.func.isRequired,
+        store: React.PropTypes.object.isRequired
     },
 
     getInitialState () {
         return Object.assign({}, this.initialState);
+    },
+
+    initialState: {
+        name: '',
+        validate: false
     },
 
     dismiss () {
@@ -18,9 +25,9 @@ const CreateWorkerModal = React.createClass({
         this.props.onDismiss();
     },
 
-    initialState: {
-        name: '',
-        validate: false
+    create () {
+        this.props.store.dispatch(actions.createWorker({name: this.state.name}));
+        this.props.onSuccess();
     },
 
     handleNameChange (event) {
@@ -32,7 +39,7 @@ const CreateWorkerModal = React.createClass({
 
     validateName () {
         if (!this.state.validate) {
-            return '';
+            return null;
         }
 
         if (this.state.name === '') {
@@ -58,7 +65,7 @@ const CreateWorkerModal = React.createClass({
                      />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button bsStyle="success"><Glyphicon glyph="ok"/> {'Create'}</Button>
+                    <Button bsStyle="success" disabled={this.validateName() !== 'success'} onClick={this.create}><Glyphicon glyph="ok"/> {'Create'}</Button>
                     <Button bsStyle="danger" onClick={this.dismiss}><Glyphicon glyph="remove"/> {'Cancel'}</Button>
                 </Modal.Footer>
             </Modal>

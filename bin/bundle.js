@@ -61635,7 +61635,8 @@
 	                        _react2.default.createElement(_createWorkerModal2.default, {
 	                            display: this.state.modals.displayCreateWorkerModal,
 	                            onDismiss: this.hideCreateWorkerModal,
-	                            onSuccess: this.hideCreateWorkerModal
+	                            onSuccess: this.hideCreateWorkerModal,
+	                            store: this.props.store
 	                        }),
 	                        _react2.default.createElement(_deleteModal2.default, {
 	                            display: this.state.modals.displayDeleteWorkerModal,
@@ -61707,6 +61708,10 @@
 	    value: true
 	});
 
+	var _actions = __webpack_require__(650);
+
+	var _actions2 = _interopRequireDefault(_actions);
+
 	var _react = __webpack_require__(1);
 
 	var _react2 = _interopRequireDefault(_react);
@@ -61721,15 +61726,12 @@
 	    propTypes: {
 	        display: _react2.default.PropTypes.bool.isRequired,
 	        onDismiss: _react2.default.PropTypes.func.isRequired,
-	        onSuccess: _react2.default.PropTypes.func.isRequired
+	        onSuccess: _react2.default.PropTypes.func.isRequired,
+	        store: _react2.default.PropTypes.object.isRequired
 	    },
 
 	    getInitialState: function getInitialState() {
 	        return Object.assign({}, this.initialState);
-	    },
-	    dismiss: function dismiss() {
-	        this.setState(Object.assign({}, this.initialState));
-	        this.props.onDismiss();
 	    },
 
 
@@ -61738,6 +61740,14 @@
 	        validate: false
 	    },
 
+	    dismiss: function dismiss() {
+	        this.setState(Object.assign({}, this.initialState));
+	        this.props.onDismiss();
+	    },
+	    create: function create() {
+	        this.props.store.dispatch(_actions2.default.createWorker({ name: this.state.name }));
+	        this.props.onSuccess();
+	    },
 	    handleNameChange: function handleNameChange(event) {
 	        this.setState({
 	            name: event.target.value,
@@ -61746,7 +61756,7 @@
 	    },
 	    validateName: function validateName() {
 	        if (!this.state.validate) {
-	            return '';
+	            return null;
 	        }
 
 	        if (this.state.name === '') {
@@ -61786,7 +61796,7 @@
 	                null,
 	                _react2.default.createElement(
 	                    _reactBootstrap.Button,
-	                    { bsStyle: 'success' },
+	                    { bsStyle: 'success', disabled: this.validateName() !== 'success', onClick: this.create },
 	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'ok' }),
 	                    ' ',
 	                    'Create'
@@ -64985,15 +64995,25 @@
 	var initialState = [];
 
 	module.exports = function () {
+	    var _Math;
+
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? initialState : arguments[0];
 	    var action = arguments[1];
 
 	    switch (action.type) {
 	        case _ActionTypes2.default.CREATE_WORKER:
+	            var ids = state.map(function (worker) {
+	                return worker.id;
+	            });
+	            Object.assign(action.worker, {
+	                id: state.length ? (_Math = Math).max.apply(_Math, _toConsumableArray(ids)) + 1 : 1
+	            });
 	            return [action.worker].concat(_toConsumableArray(state));
+
 	        case _ActionTypes2.default.DELETE_WORKER:
 	            var index = state.indexOf(action.worker);
 	            return state.slice(0, index).concat(state.slice(index + 1));
+
 	        default:
 	            return state;
 	    }
