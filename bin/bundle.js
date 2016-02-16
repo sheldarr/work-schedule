@@ -61870,6 +61870,34 @@
 	            objectName: objectName,
 	            type: ActionTypes.SHOW_DELETE_SHIFT_MODAL
 	        };
+	    },
+	    hideLinkShiftModal: function hideLinkShiftModal() {
+	        return {
+	            type: ActionTypes.HIDE_LINK_SHIFT_MODAL
+	        };
+	    },
+	    showLinkShiftModal: function showLinkShiftModal() {
+	        return {
+	            type: ActionTypes.SHOW_LINK_SHIFT_MODAL
+	        };
+	    },
+	    hideDeleteShiftLinkModal: function hideDeleteShiftLinkModal() {
+	        return {
+	            type: ActionTypes.HIDE_DELETE_SHIFT_LINK_MODAL
+	        };
+	    },
+	    showDeleteShiftLinkModal: function showDeleteShiftLinkModal(dayOfYear) {
+	        return {
+	            dayOfYear: dayOfYear,
+	            type: ActionTypes.SHOW_DELETE_SHIFT_LINK_MODAL
+	        };
+	    },
+	    deleteShiftLink: function deleteShiftLink(workerId, dayOfYear) {
+	        return {
+	            dayOfYear: dayOfYear,
+	            type: ActionTypes.DELETE_SHIFT_LINK,
+	            workerId: workerId
+	        };
 	    }
 	};
 
@@ -61891,7 +61919,12 @@
 	    SHOW_DELETE_WORKER_MODAL: 'SHOW_DELETE_WORKER_MODAL',
 	    HIDE_DELETE_WORKER_MODAL: 'HIDE_DELETE_WORKER_MODAL',
 	    SHOW_DELETE_SHIFT_MODAL: 'SHOW_DELETE_SHIFT_MODAL',
-	    HIDE_DELETE_SHIFT_MODAL: 'HIDE_DELETE_SHIFT_MODAL'
+	    HIDE_DELETE_SHIFT_MODAL: 'HIDE_DELETE_SHIFT_MODAL',
+	    HIDE_LINK_SHIFT_MODAL: 'HIDE_LINK_SHIFT_MODAL',
+	    SHOW_LINK_SHIFT_MODAL: 'SHOW_LINK_SHIFT_MODAL',
+	    HIDE_DELETE_SHIFT_LINK_MODAL: 'HIDE_DELETE_SHIFT_LINK_MODAL',
+	    SHOW_DELETE_SHIFT_LINK_MODAL: 'SHOW_DELETE_SHIFT_LINK_MODAL',
+	    DELETE_SHIFT_LINK: 'DELETE_SHIFT_LINK'
 	};
 
 /***/ },
@@ -65287,6 +65320,8 @@
 	    displayCreateShiftModal: false,
 	    displayDeleteWorkerModal: false,
 	    displayDeleteShiftModal: false,
+	    displayLinkShiftModal: false,
+	    displayDeleteShiftLinkModal: false,
 	    objectToDeleteId: 0,
 	    objectToDeleteName: ''
 	};
@@ -65327,6 +65362,21 @@
 	                displayDeleteShiftModal: true,
 	                objectToDeleteId: action.objectId,
 	                objectToDeleteName: action.objectName
+	            });
+	        case _ActionTypes2.default.HIDE_LINK_SHIFT_MODAL:
+	            return Object.assign({}, state, { displayLinkShiftModal: false });
+	        case _ActionTypes2.default.SHOW_LINK_SHIFT_MODAL:
+	            return Object.assign({}, state, { displayLinkShiftModal: true });
+	        case _ActionTypes2.default.HIDE_DELETE_SHIFT_LINK_MODAL:
+	            return Object.assign({}, state, {
+	                displayDeleteShiftLinkModal: false,
+	                objectToDeleteId: 0
+	            });
+	        case _ActionTypes2.default.SHOW_DELETE_SHIFT_LINK_MODAL:
+	            return Object.assign({}, state, {
+	                displayDeleteShiftLinkModal: true,
+	                objectToDeleteId: action.dayOfYear,
+	                objectToDeleteName: 'day ' + action.dayOfYear + ' shift'
 	            });
 	        default:
 	            return state;
@@ -65415,6 +65465,17 @@
 	            });
 	            var index = state.indexOf(worker);
 	            return state.slice(0, index).concat(state.slice(index + 1));
+
+	        case _ActionTypes2.default.DELETE_SHIFT_LINK:
+	            worker = state.find(function (worker) {
+	                return worker.id === action.workerId;
+	            });
+	            var shiftLink = worker.schedule.find(function (link) {
+	                return link.dayOfYear === action.dayOfYear;
+	            });
+	            index = worker.schedule.indexOf(shiftLink);
+	            worker.schedule = worker.schedule.slice(0, index).concat(worker.schedule.slice(index + 1));
+	            return [worker].concat(_toConsumableArray(state));
 
 	        default:
 	            return state;
@@ -65584,7 +65645,7 @@
 	    },
 	    deleteShiftLink: function deleteShiftLink(dayOfYear) {
 	        this.props.store.dispatch(_actions2.default.hideDeleteShiftLinkModal());
-	        this.props.store.dispatch(_actions2.default.deleteShiftLink(dayOfYear));
+	        this.props.store.dispatch(_actions2.default.deleteShiftLink(parseInt(this.props.params.workerId, 10), dayOfYear));
 	    },
 	    getWorker: function getWorker() {
 	        return this.state.workers.find(function (worker) {
@@ -65639,6 +65700,11 @@
 	                                    _react2.default.createElement(
 	                                        'td',
 	                                        null,
+	                                        'Day Of Year'
+	                                    ),
+	                                    _react2.default.createElement(
+	                                        'td',
+	                                        null,
 	                                        'Shift'
 	                                    ),
 	                                    _react2.default.createElement('td', null)
@@ -65655,6 +65721,11 @@
 	                                            'td',
 	                                            null,
 	                                            (0, _moment2.default)().dayOfYear(shiftLink.dayOfYear).format('D.MM.YYYY')
+	                                        ),
+	                                        _react2.default.createElement(
+	                                            'td',
+	                                            null,
+	                                            shiftLink.dayOfYear
 	                                        ),
 	                                        _react2.default.createElement(
 	                                            'td',
@@ -65700,7 +65771,7 @@
 	                            { className: 'pull-right' },
 	                            _react2.default.createElement(
 	                                _reactBootstrap.Button,
-	                                { bsStyle: 'success', onClick: this.showCreateWorkerModal },
+	                                { bsStyle: 'success', onClick: this.showLinkShiftModal },
 	                                _react2.default.createElement(
 	                                    'span',
 	                                    null,
@@ -65717,7 +65788,7 @@
 	                            store: this.props.store
 	                        }),
 	                        _react2.default.createElement(_deleteModal2.default, {
-	                            display: this.state.modals.displayDeleteShiftLink,
+	                            display: this.state.modals.displayDeleteShiftLinkModal,
 	                            objectId: this.state.modals.objectToDeleteId,
 	                            objectName: this.state.modals.objectToDeleteName,
 	                            onDismiss: this.hideDeleteShiftLinkModal,

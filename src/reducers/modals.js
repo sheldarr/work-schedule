@@ -5,6 +5,8 @@ const initialState = {
     displayCreateShiftModal: false,
     displayDeleteWorkerModal: false,
     displayDeleteShiftModal: false,
+    displayLinkShiftModal: false,
+    displayDeleteShiftLinkModal: false,
     objectToDeleteId: 0,
     objectToDeleteName: ''
 };
@@ -42,6 +44,21 @@ module.exports = (state = initialState, action) => {
             displayDeleteShiftModal: true,
             objectToDeleteId: action.objectId,
             objectToDeleteName: action.objectName
+        });
+    case ActionTypes.HIDE_LINK_SHIFT_MODAL:
+        return Object.assign({}, state, {displayLinkShiftModal: false});
+    case ActionTypes.SHOW_LINK_SHIFT_MODAL:
+        return Object.assign({}, state, {displayLinkShiftModal: true});
+    case ActionTypes.HIDE_DELETE_SHIFT_LINK_MODAL:
+        return Object.assign({}, state, {
+            displayDeleteShiftLinkModal: false,
+            objectToDeleteId: 0
+        });
+    case ActionTypes.SHOW_DELETE_SHIFT_LINK_MODAL:
+        return Object.assign({}, state, {
+            displayDeleteShiftLinkModal: true,
+            objectToDeleteId: action.dayOfYear,
+            objectToDeleteName: `day ${action.dayOfYear} shift`
         });
     default:
         return state;

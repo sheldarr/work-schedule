@@ -79,5 +79,38 @@ module.exports = {
             objectName,
             type: ActionTypes.SHOW_DELETE_SHIFT_MODAL
         };
+    },
+
+    hideLinkShiftModal () {
+        return {
+            type: ActionTypes.HIDE_LINK_SHIFT_MODAL
+        };
+    },
+
+    showLinkShiftModal () {
+        return {
+            type: ActionTypes.SHOW_LINK_SHIFT_MODAL
+        };
+    },
+
+    hideDeleteShiftLinkModal () {
+        return {
+            type: ActionTypes.HIDE_DELETE_SHIFT_LINK_MODAL
+        };
+    },
+
+    showDeleteShiftLinkModal (dayOfYear) {
+        return {
+            dayOfYear,
+            type: ActionTypes.SHOW_DELETE_SHIFT_LINK_MODAL
+        };
+    },
+
+    deleteShiftLink (workerId, dayOfYear) {
+        return {
+            dayOfYear,
+            type: ActionTypes.DELETE_SHIFT_LINK,
+            workerId
+        };
     }
 };

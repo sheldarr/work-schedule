@@ -37,7 +37,7 @@ const Schedule = React.createClass({
 
     deleteShiftLink (dayOfYear) {
         this.props.store.dispatch(actions.hideDeleteShiftLinkModal());
-        this.props.store.dispatch(actions.deleteShiftLink(dayOfYear));
+        this.props.store.dispatch(actions.deleteShiftLink(parseInt(this.props.params.workerId, 10), dayOfYear));
     },
 
     getWorker () {
@@ -66,6 +66,7 @@ const Schedule = React.createClass({
                                 <thead>
                                     <tr>
                                         <td>{'Date'}</td>
+                                        <td>{'Day Of Year'}</td>
                                         <td>{'Shift'}</td>
                                         <td></td>
                                     </tr>
@@ -74,6 +75,9 @@ const Schedule = React.createClass({
                                     {worker.schedule.map(shiftLink => <tr key={`${shiftLink.dayOfYear}_${shiftLink.shiftId}`}>
                                         <td>
                                             {moment().dayOfYear(shiftLink.dayOfYear).format('D.MM.YYYY')}
+                                        </td>
+                                        <td>
+                                            {shiftLink.dayOfYear}
                                         </td>
                                         <td>
                                             {this.getShift(shiftLink.shiftId).name}
@@ -92,7 +96,7 @@ const Schedule = React.createClass({
                                 <span><Glyphicon glyph="arrow-left"/> {'Go Back'}</span>
                             </Button>
                             <div className="pull-right">
-                                <Button bsStyle="success" onClick={this.showCreateWorkerModal}>
+                                <Button bsStyle="success" onClick={this.showLinkShiftModal}>
                                     <span><Glyphicon glyph="link"/> {'Link Shift'}</span>
                                 </Button>
                             </div>
@@ -103,7 +107,7 @@ const Schedule = React.createClass({
                                 store={this.props.store}
                             />
                             <DeleteModal
-                                display={this.state.modals.displayDeleteShiftLink}
+                                display={this.state.modals.displayDeleteShiftLinkModal}
                                 objectId={this.state.modals.objectToDeleteId}
                                 objectName={this.state.modals.objectToDeleteName}
                                 onDismiss={this.hideDeleteShiftLinkModal}
