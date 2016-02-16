@@ -105,6 +105,7 @@ const Schedule = React.createClass({
                                 onDismiss={this.hideLinkShiftModal}
                                 onSuccess={this.hideLinkShiftModal}
                                 store={this.props.store}
+                                workerId={parseInt(this.props.params.workerId, 10)}
                             />
                             <DeleteModal
                                 display={this.state.modals.displayDeleteShiftLinkModal}

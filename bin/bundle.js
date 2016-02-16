@@ -65785,7 +65785,8 @@
 	                            display: this.state.modals.displayLinkShiftModal,
 	                            onDismiss: this.hideLinkShiftModal,
 	                            onSuccess: this.hideLinkShiftModal,
-	                            store: this.props.store
+	                            store: this.props.store,
+	                            workerId: parseInt(this.props.params.workerId, 10)
 	                        }),
 	                        _react2.default.createElement(_deleteModal2.default, {
 	                            display: this.state.modals.displayDeleteShiftLinkModal,
@@ -65841,7 +65842,8 @@
 	        display: _react2.default.PropTypes.bool.isRequired,
 	        onDismiss: _react2.default.PropTypes.func.isRequired,
 	        onSuccess: _react2.default.PropTypes.func.isRequired,
-	        store: _react2.default.PropTypes.object.isRequired
+	        store: _react2.default.PropTypes.object.isRequired,
+	        workerId: _react2.default.PropTypes.number.isRequired
 	    },
 
 	    getInitialState: function getInitialState() {
@@ -65851,7 +65853,8 @@
 
 	    initialState: {
 	        dayOfYear: (0, _moment2.default)().dayOfYear(),
-	        shiftId: 0
+	        shiftId: 0,
+	        validate: false
 	    },
 
 	    dismiss: function dismiss() {
@@ -65862,13 +65865,13 @@
 	        this.props.store.dispatch(_actions2.default.linkShift({
 	            dayOfYear: this.state.dayOfYear,
 	            shiftId: this.state.shiftId,
-	            workerId: this.props.params.workerId
+	            workerId: this.props.workerId
 	        }));
 	        this.props.onSuccess();
 	    },
-	    handleDayOfYearChange: function handleDayOfYearChange(event) {
+	    handleDayOfYearChange: function handleDayOfYearChange(date) {
 	        this.setState({
-	            dayOfYear: event.target.value,
+	            dayOfYear: (0, _moment2.default)(parseInt(date, 10)).dayOfYear(),
 	            validate: true
 	        });
 	    },
@@ -65883,7 +65886,7 @@
 	            return null;
 	        }
 
-	        if (!this.state.shiftId) {
+	        if (this.state.shiftId === 0) {
 	            return 'error';
 	        }
 
@@ -65893,6 +65896,8 @@
 	        return this.validateShift();
 	    },
 	    render: function render() {
+	        var state = this.props.store.getState();
+
 	        return _react2.default.createElement(
 	            _reactBootstrap.Modal,
 	            { onHide: this.props.onDismiss, show: this.props.display },
@@ -65902,9 +65907,9 @@
 	                _react2.default.createElement(
 	                    _reactBootstrap.Modal.Title,
 	                    null,
-	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'time' }),
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'link' }),
 	                    ' ',
-	                    'Link Schedule'
+	                    'Link Shift'
 	                )
 	            ),
 	            _react2.default.createElement(
@@ -65923,6 +65928,29 @@
 	                        )
 	                    ),
 	                    _react2.default.createElement(_reactBootstrapDatetimepicker2.default, { inputProps: { disabled: true }, onChange: this.handleDayOfYearChange })
+	                ),
+	                _react2.default.createElement(
+	                    _reactBootstrap.Input,
+	                    {
+	                        bsStyle: this.validateShift(),
+	                        defaultValue: 0,
+	                        label: 'Shift',
+	                        onChange: this.handleShiftChange,
+	                        placeholder: 'Shift',
+	                        type: 'select'
+	                    },
+	                    _react2.default.createElement(
+	                        'option',
+	                        { disabled: true, value: '0' },
+	                        '---Select Shift---'
+	                    ),
+	                    state.shifts.map(function (shift) {
+	                        return _react2.default.createElement(
+	                            'option',
+	                            { key: shift.id, value: shift.id },
+	                            shift.name
+	                        );
+	                    })
 	                )
 	            ),
 	            _react2.default.createElement(
