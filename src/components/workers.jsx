@@ -1,28 +1,36 @@
-import actions from '../actions';
 import CreateWorkerModal from './createWorkerModal.jsx';
 import DeleteModal from './deleteModal.jsx';
 import React from 'react';
+import request from 'superagent';
 import { Button, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
 
 const Workers = React.createClass({
-    propTypes: {
-        store: React.PropTypes.object.isRequired
+    getInitialState () {
+        return {
+            displayCreateWorkerModal: false,
+            displayDeleteWorkerModal: false,
+            workers: [],
+            objectToDeleteId: 0,
+            objectToDeleteName: ''
+        };
     },
 
     componentWillMount () {
-        this.setState(this.props.store.getState());
-
-        this.props.store.subscribe(() => {
-            this.setState(this.props.store.getState());
-        });
+        this.downloadWorkers();
     },
 
-    showCreateWorkerModal () {
-        this.props.store.dispatch(actions.showCreateWorkerModal());
-    },
-
-    hideCreateWorkerModal () {
-        this.props.store.dispatch(actions.hideCreateWorkerModal());
+    downloadWorkers () {
+        request
+            .get('http://127.0.0.1:5000/worker')
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    alert('Api Error');
+                } else {
+                    this.setState({
+                        workers: response.body.workers
+                    });
+                }
+            });
     },
 
     redirectToWorkerCalendar (workerId) {
@@ -33,17 +41,47 @@ const Workers = React.createClass({
         location.href = `#/workers/${workerId}/schedule`;
     },
 
+    showCreateWorkerModal () {
+        this.setState({ displayCreateWorkerModal: true });
+    },
+
+    hideCreateWorkerModal () {
+        this.setState({ displayCreateWorkerModal: false });
+    },
+
     showDeleteWorkerModal (workerId, workerName) {
-        this.props.store.dispatch(actions.showDeleteWorkerModal(workerId, workerName));
+        this.setState({
+            displayDeleteWorkerModal: true,
+            objectToDeleteId: workerId,
+            objectToDeleteName: workerName
+        });
     },
 
     hideDeleteWorkerModal () {
-        this.props.store.dispatch(actions.hideDeleteWorkerModal());
+        this.setState({
+            displayDeleteWorkerModal: false,
+            objectToDeleteId: 0,
+            objectToDeleteName: ''
+        });
     },
 
     deleteWorker (workerId) {
-        this.props.store.dispatch(actions.hideDeleteWorkerModal());
-        this.props.store.dispatch(actions.deleteWorker(workerId));
+        this.hideDeleteWorkerModal();
+
+        request
+            .del(`http://127.0.0.1:5000/worker/${workerId}`)
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    alert('Api Error');
+                } else {
+                    this.downloadWorkers();
+                }
+            });
+    },
+
+    workerSucessfullyCreated () {
+        this.downloadWorkers();
+        this.hideCreateWorkerModal();
     },
 
     render () {
@@ -90,15 +128,14 @@ const Workers = React.createClass({
                                 </Button>
                             </div>
                             <CreateWorkerModal
-                                display={this.state.modals.displayCreateWorkerModal}
+                                display={this.state.displayCreateWorkerModal}
                                 onDismiss={this.hideCreateWorkerModal}
-                                onSuccess={this.hideCreateWorkerModal}
-                                store={this.props.store}
+                                onSuccess={this.workerSucessfullyCreated}
                             />
                             <DeleteModal
-                                display={this.state.modals.displayDeleteWorkerModal}
-                                objectId={this.state.modals.objectToDeleteId}
-                                objectName={this.state.modals.objectToDeleteName}
+                                display={this.state.displayDeleteWorkerModal}
+                                objectId={this.state.objectToDeleteId}
+                                objectName={this.state.objectToDeleteName}
                                 onDismiss={this.hideDeleteWorkerModal}
                                 onSuccess={this.deleteWorker}
                             />

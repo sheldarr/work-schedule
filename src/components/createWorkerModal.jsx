@@ -1,5 +1,5 @@
-import actions from '../actions';
 import React from 'react';
+import request from 'superagent';
 
 import { Button, Glyphicon, Input, Modal } from 'react-bootstrap';
 
@@ -7,8 +7,7 @@ const CreateWorkerModal = React.createClass({
     propTypes: {
         display: React.PropTypes.bool.isRequired,
         onDismiss: React.PropTypes.func.isRequired,
-        onSuccess: React.PropTypes.func.isRequired,
-        store: React.PropTypes.object.isRequired
+        onSuccess: React.PropTypes.func.isRequired
     },
 
     getInitialState () {
@@ -26,8 +25,17 @@ const CreateWorkerModal = React.createClass({
     },
 
     create () {
-        this.props.store.dispatch(actions.createWorker({name: this.state.name}));
-        this.props.onSuccess();
+        request
+            .post('http://127.0.0.1:5000/worker')
+            .send({name: this.state.name})
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    this.props.onDismiss();
+                    alert('Api Error');
+                } else {
+                    this.props.onSuccess();
+                }
+            });
     },
 
     handleNameChange (event) {
