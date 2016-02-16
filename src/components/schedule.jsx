@@ -75,7 +75,7 @@ const Schedule = React.createClass({
 
     hideDeleteShiftLinkModal () {
         this.setState({
-            displayDeleteShiftLinkModal: true,
+            displayDeleteShiftLinkModal: false,
             objectToDeleteId: 0,
             objectToDeleteName: ''
         });
@@ -83,7 +83,16 @@ const Schedule = React.createClass({
 
     deleteShiftLink (dayOfYear) {
         this.hideDeleteShiftLinkModal();
-        this.props.store.dispatch(actions.deleteShiftLink(parseInt(this.props.params.workerId, 10), dayOfYear));
+
+        request
+            .del(`http://127.0.0.1:5000/worker/${this.state.worker.id}/shiftLink/${dayOfYear}`)
+            .end((error, response) => {
+                if (error || !response.ok) {
+                    alert('Api Error');
+                } else {
+                    this.downloadWorkers();
+                }
+            });
     },
 
     getShiftName (shiftId) {
@@ -98,6 +107,12 @@ const Schedule = React.createClass({
 
     goBack () {
         location.href = `#/workers`;
+    },
+
+    shiftSucessfullyLinked () {
+        this.downloadWorkers();
+        this.downloadShifts();
+        this.hideLinkShiftModal();
     },
 
     render () {
@@ -147,7 +162,7 @@ const Schedule = React.createClass({
                             <LinkShiftModal
                                 display={this.state.displayLinkShiftModal}
                                 onDismiss={this.hideLinkShiftModal}
-                                onSuccess={this.hideLinkShiftModal}
+                                onSuccess={this.shiftSucessfullyLinked}
                                 workerId={parseInt(this.props.params.workerId, 10)}
                             />
                             <DeleteModal

@@ -64616,14 +64616,23 @@
 	    },
 	    hideDeleteShiftLinkModal: function hideDeleteShiftLinkModal() {
 	        this.setState({
-	            displayDeleteShiftLinkModal: true,
+	            displayDeleteShiftLinkModal: false,
 	            objectToDeleteId: 0,
 	            objectToDeleteName: ''
 	        });
 	    },
 	    deleteShiftLink: function deleteShiftLink(dayOfYear) {
+	        var _this3 = this;
+
 	        this.hideDeleteShiftLinkModal();
-	        this.props.store.dispatch(actions.deleteShiftLink(parseInt(this.props.params.workerId, 10), dayOfYear));
+
+	        _superagent2.default.del('http://127.0.0.1:5000/worker/' + this.state.worker.id + '/shiftLink/' + dayOfYear).end(function (error, response) {
+	            if (error || !response.ok) {
+	                alert('Api Error');
+	            } else {
+	                _this3.downloadWorkers();
+	            }
+	        });
 	    },
 	    getShiftName: function getShiftName(shiftId) {
 	        if (!this.state.shifts) {
@@ -64637,8 +64646,13 @@
 	    goBack: function goBack() {
 	        location.href = '#/workers';
 	    },
+	    shiftSucessfullyLinked: function shiftSucessfullyLinked() {
+	        this.downloadWorkers();
+	        this.downloadShifts();
+	        this.hideLinkShiftModal();
+	    },
 	    render: function render() {
-	        var _this3 = this;
+	        var _this4 = this;
 
 	        return _react2.default.createElement(
 	            _reactBootstrap.Grid,
@@ -64705,7 +64719,7 @@
 	                                        _react2.default.createElement(
 	                                            'td',
 	                                            null,
-	                                            _this3.getShiftName(shiftLink.shiftId)
+	                                            _this4.getShiftName(shiftLink.shiftId)
 	                                        ),
 	                                        _react2.default.createElement(
 	                                            'td',
@@ -64715,7 +64729,7 @@
 	                                                { className: 'pull-right' },
 	                                                _react2.default.createElement(
 	                                                    _reactBootstrap.Button,
-	                                                    { bsStyle: 'danger', onClick: _this3.showDeleteShiftLinkModal.bind(_this3, shiftLink.dayOfYear) },
+	                                                    { bsStyle: 'danger', onClick: _this4.showDeleteShiftLinkModal.bind(_this4, shiftLink.dayOfYear) },
 	                                                    _react2.default.createElement(
 	                                                        'span',
 	                                                        null,
@@ -64759,7 +64773,7 @@
 	                        _react2.default.createElement(_linkShiftModal2.default, {
 	                            display: this.state.displayLinkShiftModal,
 	                            onDismiss: this.hideLinkShiftModal,
-	                            onSuccess: this.hideLinkShiftModal,
+	                            onSuccess: this.shiftSucessfullyLinked,
 	                            workerId: parseInt(this.props.params.workerId, 10)
 	                        }),
 	                        _react2.default.createElement(_deleteModal2.default, {
@@ -64854,10 +64868,9 @@
 	    link: function link() {
 	        var _this2 = this;
 
-	        _superagent2.default.post('http://127.0.0.1:5000/link').send({
+	        _superagent2.default.post('http://127.0.0.1:5000/worker/' + this.props.workerId + '/shiftLink').send({
 	            dayOfYear: this.state.dayOfYear,
-	            shiftId: this.state.shiftId,
-	            workerId: this.props.workerId
+	            shiftId: this.state.shiftId
 	        }).end(function (error, response) {
 	            if (error || !response.ok) {
 	                _this2.props.onDismiss();

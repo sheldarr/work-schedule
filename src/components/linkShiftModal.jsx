@@ -48,11 +48,10 @@ const LinkShiftModal = React.createClass({
 
     link () {
         request
-            .post('http://127.0.0.1:5000/link')
+            .post(`http://127.0.0.1:5000/worker/${this.props.workerId}/shiftLink`)
             .send({
                 dayOfYear: this.state.dayOfYear,
-                shiftId: this.state.shiftId,
-                workerId: this.props.workerId
+                shiftId: this.state.shiftId
             })
             .end((error, response) => {
                 if (error || !response.ok) {
