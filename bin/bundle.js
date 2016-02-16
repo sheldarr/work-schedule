@@ -41164,6 +41164,15 @@
 	        store: _react2.default.PropTypes.object.isRequired
 	    },
 
+	    componentWillMount: function componentWillMount() {
+	        var _this = this;
+
+	        this.setState(this.props.store.getState());
+
+	        this.props.store.subscribe(function () {
+	            _this.setState(_this.props.store.getState());
+	        });
+	    },
 	    getWorker: function getWorker() {
 	        var state = this.props.store.getState();
 
@@ -41179,10 +41188,8 @@
 	        location.href = '#/workers';
 	    },
 	    render: function render() {
-	        var state = this.props.store.getState();
-
 	        var worker = this.getWorker();
-	        var events = worker ? _mapper2.default.mapWorker(worker, state.shifts) : _mapper2.default.mapWorkers(state.workers, state.shifts);
+	        var events = worker ? _mapper2.default.mapWorker(worker, this.state.shifts) : _mapper2.default.mapWorkers(this.state.workers, this.state.shifts);
 
 	        return _react2.default.createElement(
 	            _reactBootstrap.Grid,

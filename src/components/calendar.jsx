@@ -13,6 +13,14 @@ const Calendar = React.createClass({
         store: React.PropTypes.object.isRequired
     },
 
+    componentWillMount () {
+        this.setState(this.props.store.getState());
+
+        this.props.store.subscribe(() => {
+            this.setState(this.props.store.getState());
+        });
+    },
+
     getWorker () {
         var state = this.props.store.getState();
 
@@ -28,10 +36,8 @@ const Calendar = React.createClass({
     },
 
     render () {
-        var state = this.props.store.getState();
-
         var worker = this.getWorker();
-        var events = worker ? mapper.mapWorker(worker, state.shifts) : mapper.mapWorkers(state.workers, state.shifts);
+        var events = worker ? mapper.mapWorker(worker, this.state.shifts) : mapper.mapWorkers(this.state.workers, this.state.shifts);
 
         return (
             <Grid>
