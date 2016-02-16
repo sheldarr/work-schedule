@@ -24119,7 +24119,13 @@
 	            _react2.default.createElement(
 	                _reactBootstrap.NavbarBrand,
 	                null,
-	                'work-schedule'
+	                _react2.default.createElement(
+	                    'span',
+	                    null,
+	                    _react2.default.createElement(_reactBootstrap.Glyphicon, { glyph: 'time' }),
+	                    ' ',
+	                    'work-schedule'
+	                )
 	            ),
 	            _react2.default.createElement(
 	                _reactBootstrap.Nav,
